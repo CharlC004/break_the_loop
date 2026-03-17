@@ -5,176 +5,85 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<title>Break the Loop — 30 Day Detox</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+<title>Break the Loop</title>
 <style>
   :root {
-    --bg: #0a0a0f;
-    --bg2: #12121f;
-    --card: #1a1a2e;
-    --border: #222235;
-    --gold: #d4a842;
-    --gold-dim: #d4a84240;
-    --white: #e0e0e0;
-    --grey: #666;
-    --dark: #444;
-    --red: #c0392b;
-    --orange: #d4a842;
-    --blue: #2980b9;
-    --green: #27ae60;
-    --font: 'Cormorant Garamond', Georgia, serif;
+    --bg: #0a0a0f; --bg2: #12121f; --border: #1a1a2e;
+    --gold: #d4a842; --white: #e0e0e0;
+    --red: #c0392b; --green: #27ae60; --blue: #2980b9; --purple: #8e44ad;
   }
   * { margin: 0; padding: 0; box-sizing: border-box; }
-  body {
-    font-family: var(--font);
-    background: linear-gradient(180deg, var(--bg) 0%, var(--bg2) 100%);
-    color: var(--white);
-    min-height: 100vh;
-    -webkit-tap-highlight-color: transparent;
-  }
-  .container { max-width: 600px; margin: 0 auto; padding: 20px 16px; }
+  body { font-family: 'Georgia', serif; background: linear-gradient(180deg, var(--bg) 0%, var(--bg2) 100%); color: var(--white); min-height: 100vh; -webkit-tap-highlight-color: transparent; }
+  .container { max-width: 600px; margin: 0 auto; padding: 20px 16px 60px; }
+  .hidden { display: none !important; }
 
-  /* Start screen */
-  .start-screen {
-    display: flex; align-items: center; justify-content: center;
-    min-height: 100vh; text-align: center; padding: 20px;
-  }
-  .start-screen h1 {
-    font-size: 28px; font-weight: 400; color: var(--gold);
-    letter-spacing: 4px; text-transform: uppercase; margin-bottom: 8px;
-  }
-  .start-screen .subtitle {
-    color: #8791a0; font-size: 15px; line-height: 1.8;
-    font-style: italic; margin-bottom: 20px;
-  }
-  .thomas-box {
-    background: #d4a84210; border: 1px solid #d4a84225;
-    border-radius: 3px; padding: 12px 20px; margin-bottom: 20px;
-  }
-  .thomas-text { color: var(--gold); font-size: 14px; line-height: 1.7; font-style: italic; }
-  .thomas-ref { color: #5a4a2a; font-size: 10px; margin-top: 6px; letter-spacing: 1px; }
-  .start-btn {
-    background: linear-gradient(135deg, #d4a842, #b8860b);
-    border: none; color: var(--bg); padding: 14px 48px;
-    font-size: 14px; font-family: var(--font); letter-spacing: 3px;
-    text-transform: uppercase; cursor: pointer; border-radius: 2px;
-    font-weight: 600; transition: transform 0.2s;
-  }
-  .start-btn:active { transform: scale(0.97); }
+  .start-screen { display: flex; align-items: center; justify-content: center; min-height: 100vh; text-align: center; padding: 32px 20px; }
+  .start-inner { max-width: 420px; }
+  .start-screen h1 { font-size: 26px; font-weight: normal; color: var(--gold); letter-spacing: 5px; text-transform: uppercase; margin-bottom: 6px; }
+  .start-subtitle { color: #444; font-size: 12px; letter-spacing: 2px; margin-bottom: 36px; }
+  .quote-box { background: #d4a84208; border: 1px solid #d4a84222; padding: 22px 24px; margin-bottom: 28px; }
+  .q-text { color: var(--gold); font-style: italic; font-size: 15px; line-height: 1.75; }
+  .q-source { color: #3a3020; font-size: 10px; margin-top: 10px; letter-spacing: 1.5px; text-transform: uppercase; }
+  .q-ref { color: #2a2018; font-size: 9px; margin-top: 3px; letter-spacing: 1px; }
+  .start-desc { color: #444; font-size: 13px; line-height: 1.8; margin-bottom: 32px; }
+  .start-btn { background: transparent; border: 1px solid var(--gold); color: var(--gold); padding: 14px 40px; font-family: Georgia, serif; font-size: 12px; letter-spacing: 3px; text-transform: uppercase; cursor: pointer; transition: all 0.3s; }
+  .start-btn:hover { background: var(--gold); color: #0a0a0f; }
 
-  /* Header */
-  .header { text-align: center; margin-bottom: 12px; }
-  .header h1 {
-    font-size: 18px; color: var(--gold); letter-spacing: 4px;
-    text-transform: uppercase; font-weight: 400;
-  }
-  .header .day-label { color: #555; font-size: 12px; margin-top: 4px; }
+  .header { text-align: center; padding: 24px 0 16px; border-bottom: 1px solid var(--border); margin-bottom: 20px; }
+  .header h1 { font-size: 15px; color: var(--gold); letter-spacing: 5px; text-transform: uppercase; font-weight: normal; }
+  .day-label { color: #444; font-size: 11px; margin-top: 5px; letter-spacing: 1px; }
 
-  /* Thomas saying (tracker) */
-  .thomas-tracker {
-    text-align: center; padding: 10px 16px;
-    background: #d4a84208; border: 1px solid #d4a84218;
-    border-radius: 3px; margin-bottom: 16px;
-  }
-  .thomas-tracker .thomas-text { font-size: 13px; }
-  .thomas-tracker .thomas-ref { color: #3a3420; font-size: 9px; }
+  .quote-tracker { background: #d4a84208; border: 1px solid #d4a84218; padding: 16px 20px; margin-bottom: 20px; }
+  .quote-tracker .q-text { font-size: 14px; line-height: 1.75; }
+  .quote-tracker .q-source { margin-top: 10px; }
 
-  /* Phase banner */
-  .phase-banner {
-    border-radius: 4px; padding: 12px 16px; margin-bottom: 16px;
-  }
-  .phase-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px; }
-  .phase-name { font-size: 11px; letter-spacing: 2px; text-transform: uppercase; font-weight: 600; }
-  .phase-range { color: var(--grey); font-size: 11px; }
-  .phase-desc { color: #999; font-size: 13px; font-style: italic; line-height: 1.6; }
+  .milestone-banner { text-align: center; padding: 11px 20px; margin-bottom: 18px; border: 1px solid; font-size: 11px; letter-spacing: 2px; text-transform: uppercase; }
+  .next-ms { text-align: center; font-size: 10px; color: #2a2a3a; letter-spacing: 1px; margin-bottom: 18px; }
 
-  /* Stats */
-  .stats { display: flex; justify-content: center; gap: 32px; margin-bottom: 20px; }
-  .stat-val { font-size: 28px; color: var(--gold); font-weight: 600; text-align: center; }
-  .stat-label { font-size: 10px; color: #555; letter-spacing: 1px; text-align: center; }
-  .stat-unit { font-size: 9px; color: #444; text-align: center; }
+  .stats { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1px; background: var(--border); margin-bottom: 20px; }
+  .stat { background: var(--bg); padding: 16px 8px; text-align: center; }
+  .stat-val { font-size: 28px; color: var(--gold); line-height: 1; }
+  .stat-label { font-size: 9px; color: #333; letter-spacing: 2px; text-transform: uppercase; margin-top: 4px; }
+  .stat-unit { font-size: 10px; color: #2a2a2a; margin-top: 2px; }
 
-  /* Calendar */
-  .calendar {
-    display: grid; grid-template-columns: repeat(6, 1fr);
-    gap: 6px; margin-bottom: 20px;
-  }
-  @media (min-width: 500px) { .calendar { grid-template-columns: repeat(10, 1fr); } }
-  .day-cell {
-    aspect-ratio: 1; border-radius: 4px;
-    display: flex; flex-direction: column;
-    align-items: center; justify-content: center;
-    cursor: pointer; border: 1px solid var(--border);
-    background: #151520; position: relative;
-    transition: all 0.15s ease;
-  }
-  .day-cell.done { border-width: 1px; }
-  .day-cell.current { border: 2px solid var(--gold-dim); background: var(--card); }
-  .day-cell.future { opacity: 0.3; cursor: default; }
-  .day-cell.selected { border-width: 2px; }
-  .day-num { font-size: 14px; font-weight: 600; }
-  .day-date { font-size: 7px; color: #444; margin-top: 1px; }
-  .day-check { position: absolute; top: 2px; right: 3px; font-size: 8px; }
+  .cal-header { font-size: 10px; color: #333; letter-spacing: 2px; text-transform: uppercase; margin-bottom: 10px; }
+  .calendar { display: grid; grid-template-columns: repeat(7, 1fr); gap: 3px; max-height: 300px; overflow-y: auto; scrollbar-width: thin; scrollbar-color: #1a1a2e transparent; margin-bottom: 20px; }
+  .calendar::-webkit-scrollbar { width: 3px; }
+  .calendar::-webkit-scrollbar-thumb { background: #1a1a2e; }
+  .day-cell { aspect-ratio: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; background: #0e0e16; border: 1px solid #141420; cursor: pointer; transition: border-color 0.15s; position: relative; }
+  .day-cell:hover:not(.future) { border-color: #333; }
+  .day-cell.future { opacity: 0.15; cursor: default; }
+  .day-cell.current { border-color: var(--gold) !important; }
+  .day-cell.done { background: #0c1a0e; }
+  .day-cell.selected { outline: 1px solid #555; }
+  .day-cell.is-ms { border-color: var(--purple) !important; }
+  .day-num { font-size: 9px; color: #333; }
+  .day-cell.done .day-num { color: var(--green); }
+  .day-check { font-size: 9px; color: var(--green); }
+  .ms-pip { position: absolute; top: 2px; right: 2px; width: 3px; height: 3px; border-radius: 50%; background: var(--purple); }
 
-  /* Suggestions */
-  .suggestions {
-    background: #13131f; border: 1px solid var(--border);
-    border-radius: 4px; padding: 16px; margin-bottom: 20px;
-  }
-  .sug-title { font-size: 11px; color: var(--grey); letter-spacing: 2px; text-transform: uppercase; margin-bottom: 12px; }
-  .sug-grid { display: flex; gap: 10px; flex-wrap: wrap; }
-  .sug-card {
-    flex: 1 1 160px; background: var(--card); border: 1px solid #2a2a45;
-    border-radius: 4px; padding: 12px 14px; transition: border-color 0.2s;
-  }
-  .sug-icon { font-size: 20px; margin-bottom: 6px; }
-  .sug-name { font-size: 13px; color: var(--gold); font-weight: 600; margin-bottom: 4px; }
-  .sug-desc { font-size: 11px; color: #777; line-height: 1.5; font-style: italic; }
-  .sug-energy { font-size: 9px; color: #444; margin-top: 6px; text-transform: uppercase; letter-spacing: 1px; }
+  .sug-title { font-size: 10px; color: #333; letter-spacing: 2px; text-transform: uppercase; margin-bottom: 10px; }
+  .sug-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 20px; }
+  .sug-card { background: #0e0e16; border: 1px solid #141420; padding: 12px; }
+  .sug-icon { font-size: 18px; margin-bottom: 5px; }
+  .sug-name { font-size: 13px; color: var(--white); margin-bottom: 3px; }
+  .sug-desc { font-size: 11px; color: #444; line-height: 1.4; margin-bottom: 4px; }
+  .sug-energy { font-size: 9px; color: #2a2a2a; letter-spacing: 1px; text-transform: uppercase; }
 
-  /* Progress bar */
-  .progress-wrap { margin-bottom: 20px; }
-  .progress-bar { background: var(--card); border-radius: 2px; height: 6px; overflow: hidden; }
-  .progress-fill {
-    height: 100%; border-radius: 2px;
-    background: linear-gradient(90deg, var(--red), var(--orange), var(--blue), var(--green));
-    transition: width 0.5s ease;
-  }
-  .progress-labels { display: flex; justify-content: space-between; margin-top: 4px; }
-  .progress-labels span { font-size: 8px; letter-spacing: 1px; opacity: 0.7; }
-
-  /* Gnostic reminder */
-  .reminder {
-    text-align: center; padding: 16px; border-top: 1px solid var(--card);
-    margin-bottom: 16px;
-  }
-  .reminder p { color: #444; font-size: 13px; font-style: italic; line-height: 1.8; }
-
-  /* Reset */
+  .reminder { border-left: 2px solid var(--border); padding: 12px 16px; margin-bottom: 24px; font-size: 13px; color: #444; font-style: italic; line-height: 1.6; }
   .reset-wrap { text-align: center; }
-  .reset-btn {
-    background: none; border: 1px solid #333; color: #555;
-    padding: 8px 20px; font-size: 11px; font-family: var(--font);
-    cursor: pointer; letter-spacing: 1px; border-radius: 2px;
-  }
-
-  .hidden { display: none; }
+  .reset-btn { background: transparent; border: 1px solid #1a1a1a; color: #2a2a2a; padding: 8px 24px; font-family: Georgia, serif; font-size: 10px; letter-spacing: 2px; text-transform: uppercase; cursor: pointer; transition: all 0.3s; }
+  .reset-btn:hover { border-color: var(--red); color: var(--red); }
 </style>
 </head>
 <body>
 
-<div id="start-screen" class="start-screen">
-  <div style="max-width: 500px">
-    <div style="font-size: 64px; margin-bottom: 16px; filter: grayscale(0.3)">🔥</div>
+<div id="start-screen" class="start-screen hidden">
+  <div class="start-inner">
     <h1>Break the Loop</h1>
-    <p class="subtitle">
-      The Demiurge built the game to keep you asleep.<br>
-      Ranked points are not progress. LP is not growth.<br>
-      The divine spark doesn't climb ladders — it burns free.
-    </p>
-    <div class="thomas-box" id="start-thomas"></div>
-    <p style="color: #666; font-size: 13px; margin-bottom: 32px">30 days. No League. Reclaim the hours.</p>
+    <p class="start-subtitle">No finish line</p>
+    <div class="quote-box" id="start-quote"></div>
+    <p class="start-desc">LP is not growth.<br>The divine spark doesn't climb ladders — it burns free.</p>
     <button class="start-btn" onclick="startChallenge()">Begin Day 1</button>
   </div>
 </div>
@@ -182,339 +91,298 @@
 <div id="tracker" class="container hidden">
   <div class="header">
     <h1>Break the Loop</h1>
-    <p class="day-label" id="day-label"></p>
+    <div class="day-label" id="day-label"></div>
   </div>
-
-  <div class="thomas-tracker" id="tracker-thomas"></div>
-
-  <div class="phase-banner" id="phase-banner">
-    <div class="phase-header">
-      <span class="phase-name" id="phase-name"></span>
-      <span class="phase-range" id="phase-range"></span>
-    </div>
-    <p class="phase-desc" id="phase-desc"></p>
-  </div>
-
+  <div class="quote-tracker" id="tracker-quote"></div>
+  <div id="milestone-area"></div>
   <div class="stats">
-    <div><div class="stat-val" id="stat-streak">0</div><div class="stat-label">STREAK</div><div class="stat-unit">days</div></div>
-    <div><div class="stat-val" id="stat-completed">0</div><div class="stat-label">COMPLETED</div><div class="stat-unit">/ 30</div></div>
-    <div><div class="stat-val" id="stat-hours">0</div><div class="stat-label">HOURS SAVED</div><div class="stat-unit">est.</div></div>
+    <div class="stat"><div class="stat-val" id="s-streak">0</div><div class="stat-label">Streak</div><div class="stat-unit">days</div></div>
+    <div class="stat"><div class="stat-val" id="s-done">0</div><div class="stat-label">Completed</div><div class="stat-unit">total</div></div>
+    <div class="stat"><div class="stat-val" id="s-hours">0</div><div class="stat-label">Hours saved</div><div class="stat-unit">est.</div></div>
   </div>
-
+  <div class="cal-header">All days from day 1</div>
   <div class="calendar" id="calendar"></div>
-
-  <div class="suggestions">
-    <div class="sug-title" id="sug-title">Tonight — Instead of LoL:</div>
-    <div class="sug-grid" id="sug-grid"></div>
-  </div>
-
-  <div class="progress-wrap">
-    <div class="progress-bar"><div class="progress-fill" id="progress-fill"></div></div>
-    <div class="progress-labels">
-      <span style="color: var(--red)">THE DESCENT</span>
-      <span style="color: var(--orange)">KENOMA FADES</span>
-      <span style="color: var(--blue)">METANOIA</span>
-      <span style="color: var(--green)">PNEUMATIC FIRE</span>
-    </div>
-  </div>
-
+  <div class="sug-title" id="sug-title">Tonight — Instead of LoL:</div>
+  <div class="sug-grid" id="sug-grid"></div>
   <div class="reminder"><p id="reminder-text"></p></div>
   <div class="reset-wrap"><button class="reset-btn" onclick="resetChallenge()">RESET</button></div>
 </div>
 
-<!-- Firebase -->
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
 import { getDatabase, ref, set, onValue } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
 
-const firebaseConfig = {
+const app = initializeApp({
   apiKey: "AIzaSyBL_UgrA0Y15vZOHfhQr0aKs542RNZu0rI",
   authDomain: "liftos-76b82.firebaseapp.com",
   databaseURL: "https://liftos-76b82-default-rtdb.firebaseio.com",
   projectId: "liftos-76b82",
   storageBucket: "liftos-76b82.firebasestorage.app",
   messagingSenderId: "533099186089",
-  appId: "1:533099186089:web:62af010ca789d2c56f66b8",
-  measurementId: "G-CVVK8HQT19"
-};
-
-const app = initializeApp(firebaseConfig);
+  appId: "1:533099186089:web:62af010ca789d2c56f66b8"
+});
 const db = getDatabase(app);
-const detoxRef = ref(db, 'lol-detox');
+const DR = ref(db, 'lol-detox');
 
-// ── Data ─────────────────────────────────────────
-const ACTIVITIES = [
-  { name: "Noodle on guitar", icon: "🎸", energy: "low", desc: "No structure. Just play." },
-  { name: "Read Berserk", icon: "⚔️", energy: "low", desc: "Let Miura do the thinking." },
-  { name: "Read Vagabond", icon: "🗡️", energy: "low", desc: "Musashi's path. Yours too." },
-  { name: "Draw something", icon: "✏️", energy: "low", desc: "Doesn't matter what. Just move the pencil." },
-  { name: "Documentary", icon: "🎬", energy: "low", desc: "Islamic history, geopolitics, military." },
-  { name: "Walk outside", icon: "🚶", energy: "low", desc: "No phone. Just walk." },
-  { name: "Stretch / mobility", icon: "🧘", energy: "low", desc: "10 min. Your body needs it." },
-  { name: "Listen to full album", icon: "🎧", energy: "low", desc: "Start to finish. No skipping." },
-  { name: "Read Gnostic texts", icon: "📜", energy: "medium", desc: "Nag Hammadi, Apocryphon of John." },
-  { name: "Journal / reflect", icon: "📝", energy: "medium", desc: "Write what's on your mind." },
-  { name: "Practice guitar", icon: "🎵", energy: "medium", desc: "Charley Crockett or Joyce Manor." },
-  { name: "Sketch from reference", icon: "🖼️", energy: "medium", desc: "Copy a panel from Berserk or Vagabond." },
+// ── QUOTES ────────────────────────────────────────────────────────────────────
+const Q = [
+  // Gospel of Thomas
+  {t:"Whoever finds the interpretation of these sayings will not experience death.",s:"Gospel of Thomas",r:"Saying 1"},
+  {t:"Let him who seeks continue seeking until he finds. When he finds, he will become troubled. When he becomes troubled, he will be astonished, and he will rule over the all.",s:"Gospel of Thomas",r:"Saying 2"},
+  {t:"The kingdom is inside of you, and it is outside of you. When you come to know yourselves, then you will become known.",s:"Gospel of Thomas",r:"Saying 3"},
+  {t:"Know what is in front of your face, and what is hidden from you will be disclosed to you. For there is nothing hidden that will not be revealed.",s:"Gospel of Thomas",r:"Saying 5"},
+  {t:"If the flesh came into being because of spirit, it is a wonder. But if spirit came into being because of the body, it is a wonder of wonders.",s:"Gospel of Thomas",r:"Saying 29"},
+  {t:"When you make the two into one, and when you make the inner like the outer and the outer like the inner — then you will enter the kingdom.",s:"Gospel of Thomas",r:"Saying 22"},
+  {t:"There is light within a person of light, and it lights up the whole world. If it does not shine, it is dark.",s:"Gospel of Thomas",r:"Saying 24"},
+  {t:"If you do not fast as regards the world, you will not find the kingdom.",s:"Gospel of Thomas",r:"Saying 27"},
+  {t:"I took my place in the midst of the world, and I appeared to them in flesh. I found all of them intoxicated; I found none of them thirsty.",s:"Gospel of Thomas",r:"Saying 28"},
+  {t:"Be on your guard against the world. Arm yourselves with great strength lest the robbers find a way to come to you.",s:"Gospel of Thomas",r:"Saying 21"},
+  {t:"Blessed are the solitary and elect, for you will find the kingdom. For you are from it, and to it you will return.",s:"Gospel of Thomas",r:"Saying 49"},
+  {t:"We came from the light, from the place where the light came into being by itself, established itself, and appeared in their image.",s:"Gospel of Thomas",r:"Saying 50"},
+  {t:"What you look forward to has already come, but you do not recognize it.",s:"Gospel of Thomas",r:"Saying 51"},
+  {t:"Whoever has come to understand the world has found only a corpse, and whoever has found a corpse is superior to the world.",s:"Gospel of Thomas",r:"Saying 56"},
+  {t:"Blessed is the person who has suffered and found life.",s:"Gospel of Thomas",r:"Saying 58"},
+  {t:"Those who know all, but are lacking in themselves, are utterly lacking.",s:"Gospel of Thomas",r:"Saying 67"},
+  {t:"If you bring forth what is within you, what you have will save you. If you do not have that within you, what you do not have within you will kill you.",s:"Gospel of Thomas",r:"Saying 70"},
+  {t:"I am the light that is over all things. I am all: from me all came forth, and to me all attained. Split a piece of wood; I am there. Lift up the stone, and you will find me there.",s:"Gospel of Thomas",r:"Saying 77"},
+  {t:"Be passersby.",s:"Gospel of Thomas",r:"Saying 42"},
+  {t:"Whoever is near me is near the fire, and whoever is far from me is far from the kingdom.",s:"Gospel of Thomas",r:"Saying 82"},
+  {t:"The kingdom of the father is spread out upon the earth, and people do not see it.",s:"Gospel of Thomas",r:"Saying 113"},
+  {t:"One who seeks will find, and for one who knocks it will be opened.",s:"Gospel of Thomas",r:"Saying 94"},
+  {t:"Blessed is he who came into being before he came into being.",s:"Gospel of Thomas",r:"Saying 19"},
+  {t:"Blessed is he who will take his place in the beginning; he will know the end and will not experience death.",s:"Gospel of Thomas",r:"Saying 18"},
+  // Nag Hammadi
+  {t:"Ignorance is the mother of all evil. Ignorance will result in death, because those who come from ignorance neither were nor are nor will be.",s:"Gospel of Philip",r:"Nag Hammadi"},
+  {t:"Those who say they will die first and then rise are in error. If they do not first receive the resurrection while they live, when they die they will receive nothing.",s:"Gospel of Philip",r:"Nag Hammadi"},
+  {t:"The world came about through a mistake. For he who created it wanted to create it imperishable and immortal. He fell short of attaining his desire.",s:"Gospel of Philip",r:"Nag Hammadi"},
+  {t:"Light and darkness, life and death, right and left are siblings of one another. It is not possible to separate them from one another.",s:"Gospel of Philip",r:"Nag Hammadi"},
+  {t:"Truth did not come into the world naked, but it came in types and images. The world will not receive truth in any other way.",s:"Gospel of Philip",r:"Nag Hammadi"},
+  {t:"It is within Unity that each one will attain himself; within knowledge he will purify himself from multiplicity into Unity, consuming matter within himself like fire.",s:"Gospel of Truth",r:"Nag Hammadi"},
+  {t:"He who is to have knowledge in this manner knows where he comes from and where he is going.",s:"Gospel of Truth",r:"Nag Hammadi"},
+  {t:"The thinking of those who are saved will not perish. The minds of those who have known him will not perish.",s:"Gospel of Truth",r:"Nag Hammadi"},
+  // Hermeticism
+  {t:"As above, so below; as below, so above. As within, so without; as without, so within.",s:"The Kybalion",r:"Hermetic"},
+  {t:"The All is Mind; the universe is mental.",s:"The Kybalion",r:"Hermetic"},
+  {t:"If you do not make yourself equal to God, you cannot perceive God; for like is known by like.",s:"Corpus Hermeticum",r:"Hermetic"},
+  {t:"He who understands himself, understands all.",s:"Corpus Hermeticum",r:"Hermetic"},
+  {t:"Everything that is, is change. Nothing is still. Only the Absolute is motionless, because it alone is infinite.",s:"Corpus Hermeticum",r:"Hermetic"},
+  {t:"Man is a great marvel, a living thing to be worshipped and honoured: for he passes into the nature of God, as if he were himself a God.",s:"Corpus Hermeticum",r:"Hermetic"},
+  {t:"God is not a mind, but the cause of the mind's existence; not a spirit, but the cause of spirit's existence; not light, but the cause of light.",s:"Corpus Hermeticum",r:"Hermetic"},
+  // Carl Jung
+  {t:"Until you make the unconscious conscious, it will direct your life and you will call it fate.",s:"Carl Jung",r:""},
+  {t:"The most terrifying thing is to accept oneself completely.",s:"Carl Jung",r:""},
+  {t:"Everything that irritates us about others can lead us to an understanding of ourselves.",s:"Carl Jung",r:""},
+  {t:"The shadow is a moral problem that challenges the whole ego-personality, for no one can become conscious of the shadow without considerable moral effort.",s:"Carl Jung",r:"Aion"},
+  {t:"One does not become enlightened by imagining figures of light, but by making the darkness conscious.",s:"Carl Jung",r:""},
+  {t:"Your visions will become clear only when you can look into your own heart. Who looks outside, dreams; who looks inside, awakes.",s:"Carl Jung",r:""},
+  {t:"The privilege of a lifetime is to become who you truly are.",s:"Carl Jung",r:""},
+  {t:"We cannot change anything unless we accept it. Condemnation does not liberate, it oppresses.",s:"Carl Jung",r:""},
+  {t:"The Self is not only the centre but also the whole circumference which embraces both conscious and unconscious.",s:"Carl Jung",r:"Psychology and Alchemy"},
+  {t:"Knowing your own darkness is the best method for dealing with the darknesses of other people.",s:"Carl Jung",r:""},
+  {t:"The greatest and most important problems of life are all fundamentally insoluble. They can never be solved but only outgrown.",s:"Carl Jung",r:""},
+  {t:"I am not what happened to me. I am what I choose to become.",s:"Carl Jung",r:""},
+  {t:"Where love rules, there is no will to power; and where power predominates, there love is lacking. The one is the shadow of the other.",s:"Carl Jung",r:""},
+  {t:"In each of us there is another whom we do not know.",s:"Carl Jung",r:""},
+  {t:"The Gnostics were the first thinkers to concern themselves with the problem of evil in its true depth.",s:"Carl Jung",r:"Aion"},
+  {t:"Man needs difficulties; they are necessary for health.",s:"Carl Jung",r:""},
+  {t:"Loneliness does not come from having no people around, but from being unable to communicate the things that seem important to oneself.",s:"Carl Jung",r:""},
+  {t:"The shoe that fits one person pinches another; there is no recipe for living that suits all cases.",s:"Carl Jung",r:""},
+  // Berserk
+  {t:"If you're always worried about crushing the bugs beneath your feet, you won't be able to walk.",s:"Berserk",r:"Guts"},
+  {t:"A dream — it's something you do for yourself, not for others.",s:"Berserk",r:"Guts"},
+  {t:"In this world, is the destiny of mankind controlled by some transcendental entity or law? At least it is true that man has no control, even over his own will.",s:"Berserk",r:"Narration"},
+  {t:"Struggle. That is the only way.",s:"Berserk",r:"Skull Knight"},
+  {t:"Causality. Even if you were to escape this current predicament — as long as you remain a struggler of fate, this is probably not the last time you will stand at such a brutal crossroads.",s:"Berserk",r:"Skull Knight"},
+  {t:"Humans build walls around themselves and call it the world. Then they fear what lies beyond the walls.",s:"Berserk",r:"Schierke"},
+  {t:"The current of the world flows through all things. To resist it blindly is not strength — it is ignorance.",s:"Berserk",r:"Schierke"},
+  {t:"The darkness is not your enemy. It is the mirror. What you hate in it is what you have not yet accepted in yourself.",s:"Berserk",r:"Flora"},
+  {t:"Magic is not power over the world. It is the willingness to be changed by it.",s:"Berserk",r:"Flora"},
+  {t:"Even if we painstakingly piece together something lost, it doesn't mean things will ever go back to how they were.",s:"Berserk",r:"Guts"},
+  {t:"On the battlefield, there is no place for hope. What lies there is only cold despair and a hollow wish to survive.",s:"Berserk",r:"Guts"},
+  {t:"A person who can feel the pain of others — is that not the mark of a human being?",s:"Berserk",r:"Schierke"},
+  // Vagabond
+  {t:"I was afraid of losing. And so I lost myself.",s:"Vagabond",r:"Musashi"},
+  {t:"The only thing blocking your path is your own weakness.",s:"Vagabond",r:"Musashi"},
+  {t:"You keep fighting the same battles inside your head. The real enemy isn't out there.",s:"Vagabond",r:"Takuan"},
+  {t:"When you have nothing left to protect, you no longer have anything to fear. And when you no longer fear anything — you can truly cut.",s:"Vagabond",r:"Yagyu Sekishusai"},
+  {t:"I am the strongest. And yet — what is there?",s:"Vagabond",r:"Inshun"},
+  {t:"I want to be the greatest. Not because I want to be the greatest — I just want to know what I'm made of.",s:"Vagabond",r:"Musashi"},
+  {t:"There is no opponent. There is only you — and the sword — and this moment.",s:"Vagabond",r:"Musashi"},
+  {t:"A man who has truly faced death no longer fears living.",s:"Vagabond",r:"Takuan"},
+  {t:"Water flows around the stone. It does not fight it. It simply finds the way.",s:"Vagabond",r:"Musashi"},
+  // Book of Five Rings
+  {t:"Do nothing that is of no use.",s:"Book of Five Rings",r:"Miyamoto Musashi"},
+  {t:"Today is victory over yourself of yesterday; tomorrow is your victory over lesser men.",s:"Book of Five Rings",r:"Miyamoto Musashi"},
+  {t:"Think lightly of yourself and deeply of the world.",s:"Book of Five Rings",r:"Miyamoto Musashi"},
+  {t:"It is difficult to understand the universe if you only study one planet.",s:"Book of Five Rings",r:"Miyamoto Musashi"},
+  {t:"You must understand that there is more than one path to the top of the mountain.",s:"Book of Five Rings",r:"Miyamoto Musashi"},
+  {t:"The approach to combat and the everyday mind should be the same.",s:"Book of Five Rings",r:"Miyamoto Musashi"},
+  {t:"In strategy it is important to see distant things as if they were close and to take a distanced view of close things.",s:"Book of Five Rings",r:"Miyamoto Musashi"},
+  {t:"Fixation is the way to death. Fluidity is the way to life.",s:"Book of Five Rings",r:"Miyamoto Musashi"},
+  {t:"Polish your wisdom: learn public justice, distinguish between good and evil, study the ways of different arts one by one.",s:"Book of Five Rings",r:"Miyamoto Musashi"},
+  // Bob Dylan
+  {t:"He not busy being born is busy dying.",s:"Bob Dylan",r:"It's Alright, Ma (I'm Only Bleeding)"},
+  {t:"Disillusioned words like bullets bark as human gods aim for their mark.",s:"Bob Dylan",r:"It's Alright, Ma (I'm Only Bleeding)"},
+  {t:"Darkness at the break of noon shadows even the silver spoon.",s:"Bob Dylan",r:"It's Alright, Ma (I'm Only Bleeding)"},
+  {t:"I accept chaos. I'm not sure whether it accepts me.",s:"Bob Dylan",r:""},
+  {t:"A man is a success if he gets up in the morning and gets to bed at night, and in between does what he wants to do.",s:"Bob Dylan",r:""},
+  {t:"Take care of all your memories. For you cannot relive them.",s:"Bob Dylan",r:""},
+  {t:"Behind every beautiful thing, there's been some kind of pain.",s:"Bob Dylan",r:"Not Dark Yet"},
+  {t:"I was so much older then, I'm younger than that now.",s:"Bob Dylan",r:"My Back Pages"},
+  {t:"Steal a little and they throw you in jail, steal a lot and they make you king.",s:"Bob Dylan",r:"Sweetheart Like You"},
+  {t:"You don't need a weatherman to know which way the wind blows.",s:"Bob Dylan",r:"Subterranean Homesick Blues"},
 ];
 
-const THOMAS = [
-  { num: 2, text: "Seek and do not stop seeking. When you find, you will be troubled. When troubled, you will marvel — and reign over all." },
-  { num: 3, text: "The kingdom is within you and all around you. Know yourself, and you will be known." },
-  { num: 5, text: "Know what is in front of your face, and what is hidden will be revealed." },
-  { num: 7, text: "Blessed is the lion that the man devours — but cursed is the man devoured by the lion." },
-  { num: 11, text: "The dead are not alive, and the living will not die. When you consumed dead things, you made them alive." },
-  { num: 18, text: "Where the beginning is, there the end will be. Blessed is the one who stands at the beginning — they will know the end." },
-  { num: 22, text: "When you make the two into one, the inside like the outside, the above like the below — then you will enter the kingdom." },
-  { num: 24, text: "There is light within a person of light, and it illuminates the whole world." },
-  { num: 28, text: "I stood in the midst of the world and found them all drunk. None were thirsty. My soul ached." },
-  { num: 29, text: "If the flesh came into being because of spirit — that is a marvel. But spirit because of the body — that is a marvel of marvels." },
-  { num: 42, text: "Be passers-by." },
-  { num: 50, text: "We came from the light, where the light came into being of its own accord." },
-  { num: 56, text: "Whoever has come to know the world has found a corpse." },
-  { num: 58, text: "Blessed is the one who has struggled and found life." },
-  { num: 67, text: "If you know everything else but do not know yourself, you have missed everything." },
-  { num: 70, text: "If you bring forth what is within you, it will save you. If you do not, it will destroy you." },
-  { num: 77, text: "I am the light over all things. Split a piece of wood — I am there. Lift a stone — you will find me." },
-  { num: 80, text: "Whoever has come to know the world has found the body — and the world is not worthy of whoever has found it." },
-  { num: 83, text: "Images are visible to people, but the light within them is hidden. It will reveal itself." },
-  { num: 94, text: "Whoever seeks will find. Whoever knocks — it will be opened." },
-  { num: 108, text: "Whoever drinks from my mouth will become like me. I myself will become that person." },
-  { num: 111, text: "The heavens and the earth will roll up in your presence. Whoever lives from the Living One will not see death." },
-  { num: 113, text: "The kingdom is spread out upon the earth, and people do not see it." },
+const MILESTONES = [
+  {day:7,   label:"One Week",    color:"#2980b9", desc:"The initial withdrawal is behind you."},
+  {day:14,  label:"Two Weeks",   color:"#27ae60", desc:"New patterns are forming."},
+  {day:21,  label:"Three Weeks", color:"#d4a842", desc:"The pull becomes background noise."},
+  {day:30,  label:"30 Days",     color:"#8e44ad", desc:"The original threshold. Keep going."},
+  {day:60,  label:"60 Days",     color:"#c0392b", desc:"Habituation is gone. This is identity."},
+  {day:90,  label:"90 Days",     color:"#d4a842", desc:"Three months of reclaimed time."},
+  {day:180, label:"180 Days",    color:"#27ae60", desc:"Half a year. The loop is broken."},
+  {day:365, label:"One Year",    color:"#8e44ad", desc:"A full revolution without the cage."},
 ];
+const MS_SET = new Set(MILESTONES.map(m => m.day));
 
-const PHASES = [
-  { range: [1, 7], name: "THE DESCENT", desc: "Withdrawal peaks. The archons scream loudest now. Observe the craving — it is not you.", color: "var(--red)" },
-  { range: [8, 14], name: "THE KENOMA FADES", desc: "Dopamine receptors recalibrating. The false world loses its grip. Cravings become whispers.", color: "var(--orange)" },
-  { range: [15, 21], name: "METANOIA", desc: "Transformation. New patterns solidifying. You are building something real now.", color: "var(--blue)" },
-  { range: [22, 30], name: "PNEUMATIC FIRE", desc: "The divine spark burns clean. 30 days rewires the circuit. You chose this.", color: "var(--green)" },
+const ACTS = [
+  {name:"Noodle on guitar", icon:"🎸", energy:"low",    desc:"No structure. Just play."},
+  {name:"Read Berserk",     icon:"📖", energy:"low",    desc:"Let Guts carry the darkness."},
+  {name:"Lift session",     icon:"🏋️", energy:"high",   desc:"Channel it into iron."},
+  {name:"Golf swing work",  icon:"⛳", energy:"medium", desc:"Slow reps in the backyard."},
+  {name:"Walk outside",     icon:"🚶", energy:"low",    desc:"Unstructured movement."},
+  {name:"Morning brief",    icon:"📊", energy:"medium", desc:"Build something real."},
+  {name:"Cook something",   icon:"🍳", energy:"medium", desc:"Slow down. Use your hands."},
+  {name:"Journal",          icon:"✍️", energy:"low",    desc:"Name what you're actually feeling."},
 ];
 
 const REMINDERS = [
-  "The craving is not yours. It belongs to the system that installed it. Watch it rise. Watch it fall. You are the one watching.",
-  "The false light dims. What remains is quieter, but it is real. The hours you reclaim are yours — not the Demiurge's.",
-  "Metanoia — the turning of the mind. You are not removing a habit. You are remembering what was always underneath.",
-  "The pneumatic fire burns without fuel. You didn't quit a game. You left a cage you built around yourself."
+  "The first week is the Kenoma — the void between what was and what will be. Sit in it.",
+  "The craving is not you. It is the Archon at the gate. You do not owe it passage.",
+  "Every hour reclaimed is an hour the divine spark gets to burn in daylight.",
+  "You are not quitting something. You are returning to what was always there.",
+  "The loop has no exit — except the one you already walked through.",
+  "Do nothing that is of no use. A ranked game at midnight fails that test immediately.",
+  "The shadow wants to pull you back into the pattern it knows. Name it. That is enough.",
+  "Until you make the unconscious conscious, it will direct your life and you will call it fate.",
 ];
 
-// ── State ────────────────────────────────────────
+// ── STATE ─────────────────────────────────────────────────────────────────────
 let state = { startDate: null, completedDays: {} };
-let selectedDay = null;
+let selDay = null;
 
-// ── Firebase sync ────────────────────────────────
-onValue(detoxRef, (snapshot) => {
-  const data = snapshot.val();
-  if (data) {
-    state.startDate = data.startDate || null;
-    state.completedDays = data.completedDays || {};
-  }
-  render();
+function save() { set(DR, state); }
+
+onValue(DR, snap => {
+  const d = snap.val();
+  if (d && d.startDate) { state = d; showTracker(); }
+  else showStart();
 });
 
-function saveState() {
-  set(detoxRef, state);
+// ── HELPERS ───────────────────────────────────────────────────────────────────
+function quote(day) { return Q[(day - 1) % Q.length]; }
+
+function curDay() {
+  if (!state.startDate) return 1;
+  const s = new Date(state.startDate), n = new Date();
+  s.setHours(0,0,0,0); n.setHours(0,0,0,0);
+  return Math.max(1, Math.floor((n - s) / 86400000) + 1);
 }
 
-// ── Helpers ──────────────────────────────────────
-function getPhase(day) {
-  return PHASES.find(p => day >= p.range[0] && day <= p.range[1]) || PHASES[0];
-}
-
-function getSaying(dayNum) {
-  return THOMAS[(dayNum * 7 + 3) % THOMAS.length];
-}
-
-function seededRandom(seed) {
-  let x = Math.sin(seed) * 10000;
-  return x - Math.floor(x);
-}
-
-function getSuggestions(dayNum) {
-  const seed = dayNum * 137;
-  const shuffled = [...ACTIVITIES].sort((a, b) =>
-    seededRandom(seed + ACTIVITIES.indexOf(a)) - seededRandom(seed + ACTIVITIES.indexOf(b))
-  );
-  return shuffled.slice(0, 3);
-}
-
-function getCurrentDay() {
-  if (!state.startDate) return 0;
-  const start = new Date(state.startDate);
-  const now = new Date();
-  start.setHours(0,0,0,0);
-  now.setHours(0,0,0,0);
-  return Math.floor((now - start) / 86400000) + 1;
-}
-
-function getStreak() {
-  let streak = 0;
-  const cur = getCurrentDay();
-  for (let i = 1; i <= 30; i++) {
-    if (state.completedDays[i]) streak = i;
-    else if (i <= cur) break;
+function streak() {
+  const c = curDay(); let k = 0;
+  for (let d = c; d >= 1; d--) {
+    if (state.completedDays[d]) k++;
+    else if (d < c) break;
   }
-  return streak;
+  return k;
 }
 
-function getDayDate(dayNum) {
-  if (!state.startDate) return "";
-  const d = new Date(state.startDate);
-  d.setDate(d.getDate() + dayNum - 1);
-  return d.toLocaleDateString("en-US", { month: "short", day: "numeric" });
+function quoteHTML(day) {
+  const q = quote(day);
+  return `<div class="q-text">"${q.t}"</div>
+          <div class="q-source">${q.s}</div>
+          ${q.r ? `<div class="q-ref">${q.r}</div>` : ''}`;
 }
 
-// ── Actions ──────────────────────────────────────
-window.startChallenge = function() {
-  state.startDate = new Date().toISOString().split("T")[0];
-  state.completedDays = {};
-  saveState();
+// ── ACTIONS ───────────────────────────────────────────────────────────────────
+window.startChallenge = () => {
+  state = { startDate: new Date().toISOString().split('T')[0], completedDays: {} };
+  save(); showTracker();
 };
-
-window.resetChallenge = function() {
-  if (confirm("Reset the 30-day challenge? This cannot be undone.")) {
-    state.startDate = null;
-    state.completedDays = {};
-    selectedDay = null;
-    saveState();
-  }
+window.resetChallenge = () => {
+  if (!confirm('Reset everything?')) return;
+  state = { startDate: null, completedDays: {} };
+  save(); showStart();
 };
+window.toggleDay = d => { state.completedDays[d] = !state.completedDays[d]; save(); render(); };
+window.selDay = d => { selDay = (selDay === d) ? null : d; render(); };
 
-window.toggleDay = function(dayNum) {
-  const cur = getCurrentDay();
-  if (dayNum > cur) return;
-  if (state.completedDays[dayNum]) {
-    delete state.completedDays[dayNum];
-  } else {
-    state.completedDays[dayNum] = new Date().toISOString();
-  }
-  selectedDay = dayNum;
-  saveState();
-};
+// ── RENDER ────────────────────────────────────────────────────────────────────
+function showStart() {
+  document.getElementById('start-screen').classList.remove('hidden');
+  document.getElementById('tracker').classList.add('hidden');
+  document.getElementById('start-quote').innerHTML = quoteHTML(1);
+}
 
-window.selectDay = function(dayNum) {
-  selectedDay = dayNum;
-  renderSuggestions(dayNum);
-  renderThomas(dayNum);
-};
+function showTracker() {
+  document.getElementById('start-screen').classList.add('hidden');
+  document.getElementById('tracker').classList.remove('hidden');
+  render();
+}
 
-// ── Render ───────────────────────────────────────
 function render() {
-  const startScreen = document.getElementById('start-screen');
-  const tracker = document.getElementById('tracker');
+  const cd = curDay();
+  const vd = selDay || cd;
+  const done = Object.values(state.completedDays).filter(Boolean).length;
+  const sk = streak();
 
-  if (!state.startDate) {
-    startScreen.classList.remove('hidden');
-    tracker.classList.add('hidden');
-    const s = getSaying(1);
-    document.getElementById('start-thomas').innerHTML =
-      `<p class="thomas-text">"${s.text}"</p><p class="thomas-ref">— Gospel of Thomas, saying ${s.num}</p>`;
-    return;
+  document.getElementById('day-label').textContent = `Day ${cd}  ·  ${done} days clean`;
+  document.getElementById('tracker-quote').innerHTML = quoteHTML(cd);
+
+  // Milestone
+  const msEl = document.getElementById('milestone-area');
+  const ms = MILESTONES.find(m => m.day === cd);
+  if (ms) {
+    msEl.innerHTML = `<div class="milestone-banner" style="border-color:${ms.color};color:${ms.color};background:${ms.color}11;">◆ ${ms.label} — ${ms.desc}</div>`;
+  } else {
+    const nx = MILESTONES.find(m => m.day > cd);
+    msEl.innerHTML = nx ? `<div class="next-ms">Next milestone: ${nx.label} in ${nx.day - cd} day${nx.day - cd !== 1 ? 's' : ''}</div>` : '';
   }
-
-  startScreen.classList.add('hidden');
-  tracker.classList.remove('hidden');
-
-  const currentDay = getCurrentDay();
-  const clampedDay = Math.max(1, Math.min(currentDay, 30));
-  const viewDay = selectedDay || clampedDay;
-  const streak = getStreak();
-  const completedCount = Object.keys(state.completedDays).length;
-  const phase = getPhase(clampedDay);
-  const viewPhase = getPhase(viewDay);
-
-  // Header
-  document.getElementById('day-label').textContent =
-    `Day ${clampedDay} of 30 · ${phase.name}`;
-
-  // Thomas
-  renderThomas(viewDay);
-
-  // Phase
-  const banner = document.getElementById('phase-banner');
-  banner.style.background = `${viewPhase.color.replace('var(--', '').replace(')', '')}15`;
-  banner.style.background = `color-mix(in srgb, ${viewPhase.color} 8%, transparent)`;
-  banner.style.border = `1px solid color-mix(in srgb, ${viewPhase.color} 25%, transparent)`;
-  document.getElementById('phase-name').textContent = viewPhase.name;
-  document.getElementById('phase-name').style.color = viewPhase.color;
-  document.getElementById('phase-range').textContent = `Days ${viewPhase.range[0]}–${viewPhase.range[1]}`;
-  document.getElementById('phase-desc').textContent = viewPhase.desc;
 
   // Stats
-  document.getElementById('stat-streak').textContent = streak;
-  document.getElementById('stat-completed').textContent = completedCount;
-  document.getElementById('stat-hours').textContent = Math.round(completedCount * 2.5);
+  document.getElementById('s-streak').textContent = sk;
+  document.getElementById('s-done').textContent = done;
+  document.getElementById('s-hours').textContent = Math.round(done * 2.5);
 
   // Calendar
   const cal = document.getElementById('calendar');
   cal.innerHTML = '';
-  for (let i = 1; i <= 30; i++) {
-    const done = !!state.completedDays[i];
-    const isCurrent = i === currentDay;
-    const isFuture = i > currentDay;
-    const isSelected = i === selectedDay;
-    const dayPhase = getPhase(i);
-
-    const cell = document.createElement('div');
-    cell.className = 'day-cell' +
-      (done ? ' done' : '') +
-      (isCurrent ? ' current' : '') +
-      (isFuture ? ' future' : '') +
-      (isSelected ? ' selected' : '');
-
-    if (done) {
-      cell.style.background = `color-mix(in srgb, ${dayPhase.color} 18%, #151520)`;
-      cell.style.borderColor = `color-mix(in srgb, ${dayPhase.color} 35%, transparent)`;
-    }
-    if (isSelected) {
-      cell.style.borderColor = dayPhase.color;
-    }
-
-    cell.innerHTML = `
-      <span class="day-num" style="color: ${done ? dayPhase.color : '#555'}">${i}</span>
-      <span class="day-date">${getDayDate(i)}</span>
-      ${done ? '<span class="day-check">✓</span>' : ''}
-    `;
-
-    cell.onclick = () => {
-      if (!isFuture) { window.toggleDay(i); }
-      window.selectDay(i);
-    };
-
-    cal.appendChild(cell);
+  for (let i = 1; i <= cd; i++) {
+    const isDone = !!state.completedDays[i];
+    const el = document.createElement('div');
+    el.className = 'day-cell'
+      + (isDone ? ' done' : '')
+      + (i === cd ? ' current' : '')
+      + (i === selDay ? ' selected' : '')
+      + (MS_SET.has(i) ? ' is-ms' : '');
+    el.innerHTML = `<span class="day-num">${i}</span>${isDone ? '<span class="day-check">✓</span>' : ''}${MS_SET.has(i) ? '<div class="ms-pip"></div>' : ''}`;
+    el.onclick = () => { window.toggleDay(i); window.selDay(i); };
+    cal.appendChild(el);
   }
+  setTimeout(() => { cal.scrollTop = cal.scrollHeight; }, 50);
 
   // Suggestions
-  renderSuggestions(viewDay);
-
-  // Progress
-  document.getElementById('progress-fill').style.width = `${(completedCount / 30) * 100}%`;
+  document.getElementById('sug-title').textContent = selDay ? `Day ${vd} — Instead of LoL:` : 'Tonight — Instead of LoL:';
+  const offset = (vd - 1) % ACTS.length;
+  document.getElementById('sug-grid').innerHTML = [0,1,2,3].map(i => {
+    const a = ACTS[(offset + i) % ACTS.length];
+    return `<div class="sug-card"><div class="sug-icon">${a.icon}</div><div class="sug-name">${a.name}</div><div class="sug-desc">${a.desc}</div><div class="sug-energy">${a.energy} energy</div></div>`;
+  }).join('');
 
   // Reminder
-  const ri = viewDay <= 7 ? 0 : viewDay <= 14 ? 1 : viewDay <= 21 ? 2 : 3;
-  document.getElementById('reminder-text').textContent = REMINDERS[ri];
+  document.getElementById('reminder-text').textContent = REMINDERS[(cd - 1) % REMINDERS.length];
 }
-
-function renderThomas(dayNum) {
-  const s = getSaying(dayNum);
-  document.getElementById('tracker-thomas').innerHTML =
-    `<p class="thomas-text">"${s.text}"</p><p class="thomas-ref">— Gospel of Thomas, saying ${s.num}</p>`;
-}
-
-function renderSuggestions(dayNum) {
-  document.getElementById('sug-title').textContent =
-    selectedDay ? `Day ${dayNum} — Instead of LoL:` : 'Tonight — Instead of LoL:';
-  const sugs = getSuggestions(dayNum);
-  document.getElementById('sug-grid').innerHTML = sugs.map(a => `
-    <div class="sug-card">
-      <div class="sug-icon">${a.icon}</div>
-      <div class="sug-name">${a.name}</div>
-      <div class="sug-desc">${a.desc}</div>
-      <div class="sug-energy">${a.energy} energy</div>
-    </div>
-  `).join('');
-}
-
 </script>
 </body>
 </html>
