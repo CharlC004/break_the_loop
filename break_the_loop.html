@@ -6,108 +6,561 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <title>Break the Loop</title>
+<link href="https://fonts.googleapis.com/css2?family=IM+Fell+English:ital@0;1&family=Inconsolata:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
-  :root {
-    --bg: #0a0a0f; --bg2: #12121f; --border: #1a1a2e;
-    --gold: #d4a842; --white: #e0e0e0;
-    --red: #c0392b; --green: #27ae60; --blue: #2980b9; --purple: #8e44ad;
-  }
-  * { margin: 0; padding: 0; box-sizing: border-box; }
-  body { font-family: 'Georgia', serif; background: linear-gradient(180deg, var(--bg) 0%, var(--bg2) 100%); color: var(--white); min-height: 100vh; -webkit-tap-highlight-color: transparent; }
-  .container { max-width: 600px; margin: 0 auto; padding: 20px 16px 60px; }
-  .hidden { display: none !important; }
+:root {
+  --bg: #08080d;
+  --bg2: #0d0d14;
+  --surface: #10101a;
+  --surface2: #14141f;
+  --border: #1e1e2e;
+  --border2: #252535;
+  --gold: #c9a84c;
+  --gold2: #e8c97a;
+  --gold-dim: rgba(201,168,76,0.12);
+  --gold-faint: rgba(201,168,76,0.05);
+  --white: #d8d8e8;
+  --muted: #4a4a6a;
+  --muted2: #333350;
+  --red: #8b3a3a;
+  --green: #2a6b4a;
+  --green2: #3d9b6b;
+  --purple: #5a3a8b;
+  --text: #a0a0c0;
+  --serif: 'IM Fell English', Georgia, serif;
+  --mono: 'Inconsolata', monospace;
+}
 
-  .start-screen { display: flex; align-items: center; justify-content: center; min-height: 100vh; text-align: center; padding: 32px 20px; }
-  .start-inner { max-width: 420px; }
-  .start-screen h1 { font-size: 26px; font-weight: normal; color: var(--gold); letter-spacing: 5px; text-transform: uppercase; margin-bottom: 6px; }
-  .start-subtitle { color: #444; font-size: 12px; letter-spacing: 2px; margin-bottom: 36px; }
-  .quote-box { background: #d4a84208; border: 1px solid #d4a84222; padding: 22px 24px; margin-bottom: 28px; }
-  .q-text { color: var(--gold); font-style: italic; font-size: 15px; line-height: 1.75; }
-  .q-source { color: #3a3020; font-size: 10px; margin-top: 10px; letter-spacing: 1.5px; text-transform: uppercase; }
-  .q-ref { color: #2a2018; font-size: 9px; margin-top: 3px; letter-spacing: 1px; }
-  .start-desc { color: #444; font-size: 13px; line-height: 1.8; margin-bottom: 32px; }
-  .start-btn { background: transparent; border: 1px solid var(--gold); color: var(--gold); padding: 14px 40px; font-family: Georgia, serif; font-size: 12px; letter-spacing: 3px; text-transform: uppercase; cursor: pointer; transition: all 0.3s; }
-  .start-btn:hover { background: var(--gold); color: #0a0a0f; }
+* { margin: 0; padding: 0; box-sizing: border-box; }
 
-  .header { text-align: center; padding: 24px 0 16px; border-bottom: 1px solid var(--border); margin-bottom: 20px; }
-  .header h1 { font-size: 15px; color: var(--gold); letter-spacing: 5px; text-transform: uppercase; font-weight: normal; }
-  .day-label { color: #444; font-size: 11px; margin-top: 5px; letter-spacing: 1px; }
+body {
+  font-family: var(--mono);
+  background: var(--bg);
+  color: var(--white);
+  min-height: 100vh;
+  -webkit-tap-highlight-color: transparent;
+  overflow-x: hidden;
+}
 
-  .quote-tracker { background: #d4a84208; border: 1px solid #d4a84218; padding: 16px 20px; margin-bottom: 20px; }
-  .quote-tracker .q-text { font-size: 14px; line-height: 1.75; }
-  .quote-tracker .q-source { margin-top: 10px; }
+/* ── GRAIN OVERLAY ── */
+body::before {
+  content: '';
+  position: fixed; inset: 0; z-index: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+  background-size: 200px;
+  pointer-events: none;
+  opacity: 0.6;
+}
 
-  .milestone-banner { text-align: center; padding: 11px 20px; margin-bottom: 18px; border: 1px solid; font-size: 11px; letter-spacing: 2px; text-transform: uppercase; }
-  .next-ms { text-align: center; font-size: 10px; color: #2a2a3a; letter-spacing: 1px; margin-bottom: 18px; }
+.app { position: relative; z-index: 1; max-width: 640px; margin: 0 auto; padding: 0 0 80px; }
 
-  .stats { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1px; background: var(--border); margin-bottom: 20px; }
-  .stat { background: var(--bg); padding: 16px 8px; text-align: center; }
-  .stat-val { font-size: 28px; color: var(--gold); line-height: 1; }
-  .stat-label { font-size: 9px; color: #333; letter-spacing: 2px; text-transform: uppercase; margin-top: 4px; }
-  .stat-unit { font-size: 10px; color: #2a2a2a; margin-top: 2px; }
+/* ── START SCREEN ── */
+#start-screen {
+  display: flex; align-items: center; justify-content: center;
+  min-height: 100vh; padding: 40px 24px; text-align: center;
+}
+.start-inner { max-width: 460px; width: 100%; }
+.start-eyebrow {
+  font-family: var(--mono); font-size: 9px; letter-spacing: 4px;
+  color: var(--muted); text-transform: uppercase; margin-bottom: 24px;
+}
+.start-title {
+  font-family: var(--serif); font-size: 38px; font-weight: normal;
+  color: var(--gold); margin-bottom: 6px; line-height: 1.1;
+}
+.start-title em { font-style: italic; color: var(--gold2); }
+.start-rule { width: 60px; height: 1px; background: var(--border2); margin: 20px auto; }
+.start-quote-box {
+  background: var(--gold-faint); border: 1px solid rgba(201,168,76,0.15);
+  padding: 24px 28px; margin-bottom: 28px; text-align: left;
+}
+.start-q-text {
+  font-family: var(--serif); font-style: italic;
+  color: var(--gold2); font-size: 16px; line-height: 1.8;
+}
+.start-q-meta { font-size: 9px; color: var(--muted); letter-spacing: 2px; margin-top: 12px; text-transform: uppercase; }
+.start-desc { color: var(--muted); font-size: 12px; line-height: 1.9; margin-bottom: 36px; }
+.start-btn {
+  background: transparent; border: 1px solid var(--gold);
+  color: var(--gold); padding: 16px 48px;
+  font-family: var(--mono); font-size: 11px;
+  letter-spacing: 4px; text-transform: uppercase; cursor: pointer;
+  transition: all 0.4s; display: inline-block;
+}
+.start-btn:hover { background: var(--gold); color: var(--bg); }
 
-  .cal-header { font-size: 10px; color: #333; letter-spacing: 2px; text-transform: uppercase; margin-bottom: 10px; }
-  .calendar { display: grid; grid-template-columns: repeat(7, 1fr); gap: 3px; max-height: 300px; overflow-y: auto; scrollbar-width: thin; scrollbar-color: #1a1a2e transparent; margin-bottom: 20px; }
-  .calendar::-webkit-scrollbar { width: 3px; }
-  .calendar::-webkit-scrollbar-thumb { background: #1a1a2e; }
-  .day-cell { aspect-ratio: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; background: #0e0e16; border: 1px solid #141420; cursor: pointer; transition: border-color 0.15s; position: relative; }
-  .day-cell:hover:not(.future) { border-color: #333; }
-  .day-cell.future { opacity: 0.15; cursor: default; }
-  .day-cell.current { border-color: var(--gold) !important; }
-  .day-cell.done { background: #0c1a0e; }
-  .day-cell.selected { outline: 1px solid #555; }
-  .day-cell.is-ms { border-color: var(--purple) !important; }
-  .day-num { font-size: 9px; color: #333; }
-  .day-cell.done .day-num { color: var(--green); }
-  .day-check { font-size: 9px; color: var(--green); }
-  .ms-pip { position: absolute; top: 2px; right: 2px; width: 3px; height: 3px; border-radius: 50%; background: var(--purple); }
+/* ── HIDDEN ── */
+.hidden { display: none !important; }
 
-  .sug-title { font-size: 10px; color: #333; letter-spacing: 2px; text-transform: uppercase; margin-bottom: 10px; }
-  .sug-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 20px; }
-  .sug-card { background: #0e0e16; border: 1px solid #141420; padding: 12px; }
-  .sug-icon { font-size: 18px; margin-bottom: 5px; }
-  .sug-name { font-size: 13px; color: var(--white); margin-bottom: 3px; }
-  .sug-desc { font-size: 11px; color: #444; line-height: 1.4; margin-bottom: 4px; }
-  .sug-energy { font-size: 9px; color: #2a2a2a; letter-spacing: 1px; text-transform: uppercase; }
+/* ── PAGE HEADER ── */
+.page-header {
+  padding: 28px 24px 0;
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 0;
+}
+.page-header-top {
+  display: flex; align-items: flex-start; justify-content: space-between;
+  margin-bottom: 16px;
+}
+.page-title {
+  font-family: var(--serif); font-size: 22px; font-weight: normal;
+  color: var(--gold); letter-spacing: 1px;
+}
+.page-streak {
+  text-align: right;
+}
+.streak-num { font-size: 28px; color: var(--gold); line-height: 1; }
+.streak-label { font-size: 9px; color: var(--muted); letter-spacing: 2px; text-transform: uppercase; }
 
-  .reminder { border-left: 2px solid var(--border); padding: 12px 16px; margin-bottom: 24px; font-size: 13px; color: #444; font-style: italic; line-height: 1.6; }
-  .reset-wrap { text-align: center; }
-  .reset-btn { background: transparent; border: 1px solid #1a1a1a; color: #2a2a2a; padding: 8px 24px; font-family: Georgia, serif; font-size: 10px; letter-spacing: 2px; text-transform: uppercase; cursor: pointer; transition: all 0.3s; }
-  .reset-btn:hover { border-color: var(--red); color: var(--red); }
+/* ── DAILY QUOTE ── */
+.daily-quote {
+  padding: 16px 24px; border-bottom: 1px solid var(--border);
+  background: var(--gold-faint);
+}
+.dq-text {
+  font-family: var(--serif); font-style: italic;
+  color: var(--gold2); font-size: 14px; line-height: 1.75;
+}
+.dq-meta { font-size: 9px; color: var(--muted); letter-spacing: 1.5px; margin-top: 8px; text-transform: uppercase; }
+
+/* ── SECTION ── */
+.section {
+  border-bottom: 1px solid var(--border);
+}
+.section-header {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 16px 24px; cursor: pointer; user-select: none;
+  transition: background 0.2s;
+}
+.section-header:hover { background: var(--surface); }
+.section-title {
+  font-size: 10px; letter-spacing: 3px; text-transform: uppercase;
+  color: var(--text);
+}
+.section-meta { font-size: 10px; color: var(--muted); }
+.section-chevron {
+  font-size: 10px; color: var(--muted); transition: transform 0.3s;
+  margin-left: 12px;
+}
+.section.open .section-chevron { transform: rotate(180deg); }
+.section-body {
+  display: none; padding: 0 24px 20px;
+}
+.section.open .section-body { display: block; }
+
+/* ── MANIFESTO ── */
+.manifesto-body { padding: 0 24px 24px; }
+.manifesto-grid {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 1px;
+  background: var(--border); margin-bottom: 16px;
+}
+.m-cell {
+  background: var(--surface); padding: 14px 16px;
+}
+.m-cell-label {
+  font-size: 8px; letter-spacing: 2px; text-transform: uppercase;
+  color: var(--gold); margin-bottom: 6px;
+}
+.m-cell-text {
+  font-family: var(--serif); font-style: italic;
+  font-size: 12px; color: var(--text); line-height: 1.6;
+}
+.manifesto-axioms { }
+.m-axiom {
+  display: flex; gap: 12px; padding: 10px 0;
+  border-bottom: 1px solid var(--border);
+  font-size: 11px; color: var(--muted); line-height: 1.6;
+}
+.m-axiom:last-child { border-bottom: none; }
+.m-axiom-num { color: var(--gold); font-size: 9px; min-width: 18px; padding-top: 1px; }
+
+/* ── TODAY SECTION ── */
+.today-date {
+  font-size: 10px; color: var(--muted); letter-spacing: 2px;
+  text-transform: uppercase; margin-bottom: 16px; padding-top: 4px;
+}
+
+/* Toggle grid */
+.toggle-grid {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 8px;
+}
+.toggle-grid.single { grid-template-columns: 1fr; }
+.toggle-group-label {
+  font-size: 9px; letter-spacing: 2px; text-transform: uppercase;
+  color: var(--muted); margin-bottom: 10px; margin-top: 16px;
+}
+.toggle-group-label:first-child { margin-top: 0; }
+
+.tog {
+  display: flex; align-items: center; gap: 10px;
+  padding: 12px 14px; background: var(--surface);
+  border: 1px solid var(--border); cursor: pointer;
+  transition: all 0.2s; user-select: none;
+}
+.tog:hover { border-color: var(--border2); }
+.tog.on { background: rgba(42,107,74,0.15); border-color: rgba(61,155,107,0.3); }
+.tog-icon { font-size: 16px; min-width: 20px; text-align: center; }
+.tog-label { font-size: 11px; color: var(--text); }
+.tog.on .tog-label { color: var(--green2); }
+.tog-check { margin-left: auto; font-size: 11px; color: var(--green2); opacity: 0; transition: opacity 0.2s; }
+.tog.on .tog-check { opacity: 1; }
+
+/* Sleep input */
+.sleep-row {
+  display: flex; gap: 8px; align-items: stretch;
+}
+.sleep-hrs {
+  flex: 1; display: flex; align-items: center; gap: 8px;
+  padding: 12px 14px; background: var(--surface); border: 1px solid var(--border);
+}
+.sleep-hrs label { font-size: 10px; color: var(--muted); letter-spacing: 1px; white-space: nowrap; }
+.sleep-hrs input {
+  width: 48px; background: transparent; border: none;
+  color: var(--gold); font-family: var(--mono); font-size: 16px;
+  text-align: center; outline: none;
+}
+.sleep-hrs input::-webkit-inner-spin-button { -webkit-appearance: none; }
+
+/* ── WEEK SECTION ── */
+.week-nav {
+  display: flex; align-items: center; gap: 12px; margin-bottom: 20px;
+}
+.week-nav-btn {
+  background: transparent; border: 1px solid var(--border);
+  color: var(--muted); padding: 6px 12px; cursor: pointer;
+  font-family: var(--mono); font-size: 11px; transition: all 0.2s;
+}
+.week-nav-btn:hover { border-color: var(--border2); color: var(--text); }
+.week-label { font-size: 11px; color: var(--text); flex: 1; text-align: center; }
+
+.week-summary-grid {
+  display: grid; grid-template-columns: repeat(7, 1fr);
+  gap: 3px; margin-bottom: 20px;
+}
+.ws-day {
+  display: flex; flex-direction: column; gap: 2px;
+}
+.ws-day-label {
+  font-size: 8px; color: var(--muted); text-align: center; letter-spacing: 1px; margin-bottom: 4px;
+}
+.ws-pip {
+  height: 4px; border-radius: 0;
+}
+
+.week-stats-row {
+  display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px;
+  background: var(--border); margin-bottom: 20px;
+}
+.wstat {
+  background: var(--surface); padding: 14px 10px; text-align: center;
+}
+.wstat-val { font-size: 22px; color: var(--gold); line-height: 1; }
+.wstat-label { font-size: 8px; color: var(--muted); letter-spacing: 1.5px; text-transform: uppercase; margin-top: 4px; }
+
+/* Histamine */
+.hista-section { }
+.hista-label { font-size: 9px; letter-spacing: 2px; text-transform: uppercase; color: var(--muted); margin-bottom: 10px; }
+.hista-scale {
+  display: flex; gap: 6px; margin-bottom: 14px;
+}
+.hista-btn {
+  flex: 1; padding: 10px 4px; background: var(--surface);
+  border: 1px solid var(--border); cursor: pointer;
+  font-family: var(--mono); font-size: 12px; color: var(--muted);
+  text-align: center; transition: all 0.2s;
+}
+.hista-btn:hover { border-color: var(--border2); }
+.hista-btn.sel { background: rgba(90,58,139,0.2); border-color: rgba(90,58,139,0.5); color: #a078d8; }
+.hista-notes {
+  width: 100%; background: var(--surface); border: 1px solid var(--border);
+  color: var(--text); font-family: var(--serif); font-style: italic;
+  font-size: 13px; line-height: 1.7; padding: 14px 16px;
+  resize: none; outline: none; min-height: 100px;
+  transition: border-color 0.2s;
+}
+.hista-notes:focus { border-color: var(--border2); }
+.hista-notes::placeholder { color: var(--muted2); }
+.hista-save {
+  margin-top: 10px; background: transparent; border: 1px solid var(--border);
+  color: var(--muted); padding: 10px 20px; font-family: var(--mono);
+  font-size: 10px; letter-spacing: 2px; text-transform: uppercase;
+  cursor: pointer; transition: all 0.2s;
+}
+.hista-save:hover { border-color: var(--gold); color: var(--gold); }
+.hista-saved { font-size: 10px; color: var(--green2); letter-spacing: 1px; margin-top: 8px; display: none; }
+
+/* ── LOL CALENDAR ── */
+.lol-calendar {
+  display: grid; grid-template-columns: repeat(10, 1fr); gap: 3px; margin-bottom: 16px;
+}
+.lc-day {
+  aspect-ratio: 1; background: var(--surface);
+  border: 1px solid var(--border); cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 8px; color: var(--muted); transition: all 0.15s; position: relative;
+}
+.lc-day:hover { border-color: var(--border2); }
+.lc-day.lol-free { background: rgba(42,107,74,0.1); border-color: rgba(61,155,107,0.2); }
+.lc-day.lol-free .lc-num { color: var(--green2); }
+.lc-day.lol-played { background: rgba(139,58,58,0.1); border-color: rgba(139,58,58,0.3); }
+.lc-day.lol-played .lc-num { color: var(--red); }
+.lc-day.today-marker { border-color: var(--gold) !important; }
+.lc-num { font-size: 8px; }
+.ms-pip2 { position: absolute; top: 1px; right: 1px; width: 3px; height: 3px; border-radius: 50%; background: #5a3a8b; }
+
+.lol-legend {
+  display: flex; gap: 20px; font-size: 10px; color: var(--muted); margin-bottom: 16px;
+}
+.lol-legend span { display: flex; align-items: center; gap: 6px; }
+.leg-dot { width: 8px; height: 8px; border-radius: 0; }
+
+/* ── RESET ── */
+.reset-row { padding: 24px; text-align: center; }
+.reset-btn {
+  background: transparent; border: 1px solid var(--muted2);
+  color: var(--muted); padding: 8px 24px;
+  font-family: var(--mono); font-size: 9px; letter-spacing: 3px;
+  text-transform: uppercase; cursor: pointer; transition: all 0.3s;
+}
+.reset-btn:hover { border-color: var(--red); color: #c05050; }
+
+/* scrollbar */
+::-webkit-scrollbar { width: 3px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--border2); }
 </style>
 </head>
 <body>
 
-<div id="start-screen" class="start-screen hidden">
+<!-- ── START SCREEN ── -->
+<div id="start-screen">
   <div class="start-inner">
-    <h1>Break the Loop</h1>
-    <p class="start-subtitle">No finish line</p>
-    <div class="quote-box" id="start-quote"></div>
-    <p class="start-desc">LP is not growth.<br>The divine spark doesn't climb ladders — it burns free.</p>
-    <button class="start-btn" onclick="startChallenge()">Begin Day 1</button>
+    <p class="start-eyebrow">A living document</p>
+    <h1 class="start-title">Break<br><em>the Loop</em></h1>
+    <div class="start-rule"></div>
+    <div class="start-quote-box">
+      <div class="start-q-text" id="sq-text"></div>
+      <div class="start-q-meta" id="sq-meta"></div>
+    </div>
+    <p class="start-desc">
+      LP is not growth.<br>
+      The divine spark doesn't climb ladders — it burns free.<br>
+      This is a record of what you chose instead.
+    </p>
+    <button class="start-btn" onclick="startJournal()">Begin</button>
   </div>
 </div>
 
-<div id="tracker" class="container hidden">
-  <div class="header">
-    <h1>Break the Loop</h1>
-    <div class="day-label" id="day-label"></div>
+<!-- ── MAIN APP ── -->
+<div id="app" class="app hidden">
+
+  <!-- Header -->
+  <div class="page-header">
+    <div class="page-header-top">
+      <div class="page-title">Break the Loop</div>
+      <div class="page-streak">
+        <div class="streak-num" id="hdr-streak">0</div>
+        <div class="streak-label">day streak</div>
+      </div>
+    </div>
   </div>
-  <div class="quote-tracker" id="tracker-quote"></div>
-  <div id="milestone-area"></div>
-  <div class="stats">
-    <div class="stat"><div class="stat-val" id="s-streak">0</div><div class="stat-label">Streak</div><div class="stat-unit">days</div></div>
-    <div class="stat"><div class="stat-val" id="s-done">0</div><div class="stat-label">Completed</div><div class="stat-unit">total</div></div>
-    <div class="stat"><div class="stat-val" id="s-hours">0</div><div class="stat-label">Hours saved</div><div class="stat-unit">est.</div></div>
+
+  <!-- Daily Quote -->
+  <div class="daily-quote">
+    <div class="dq-text" id="dq-text"></div>
+    <div class="dq-meta" id="dq-meta"></div>
   </div>
-  <div class="cal-header">All days from day 1</div>
-  <div class="calendar" id="calendar"></div>
-  <div class="sug-title" id="sug-title">Tonight — Instead of LoL:</div>
-  <div class="sug-grid" id="sug-grid"></div>
-  <div class="reminder"><p id="reminder-text"></p></div>
-  <div class="reset-wrap"><button class="reset-btn" onclick="resetChallenge()">RESET</button></div>
+
+  <!-- ── MANIFESTO ── -->
+  <div class="section" id="sec-manifesto">
+    <div class="section-header" onclick="toggleSection('manifesto')">
+      <span class="section-title">The Gnostic Principles</span>
+      <span style="display:flex;align-items:center;gap:8px">
+        <span class="section-meta">The framework</span>
+        <span class="section-chevron">▼</span>
+      </span>
+    </div>
+    <div class="section-body">
+      <div class="manifesto-body" style="padding:0 0 20px">
+        <div class="manifesto-grid">
+          <div class="m-cell">
+            <div class="m-cell-label">Reject</div>
+            <div class="m-cell-text">The world of consumption, status signaling, and empty spectacle. The Kenoma. The cage with gold bars.</div>
+          </div>
+          <div class="m-cell">
+            <div class="m-cell-label">Affirm</div>
+            <div class="m-cell-text">The divine spark within. Pneumatic fire. The capacity for gnosis — direct knowing, beyond belief or argument.</div>
+          </div>
+          <div class="m-cell">
+            <div class="m-cell-label">Recognize</div>
+            <div class="m-cell-text">The Archons: algorithms, rankings, dopamine loops, social mirrors. They rule through ignorance, not force.</div>
+          </div>
+          <div class="m-cell">
+            <div class="m-cell-label">Practice</div>
+            <div class="m-cell-text">Metanoia — the turning of the mind. Not once, but daily. Each moment of awareness is the spark catching light.</div>
+          </div>
+        </div>
+        <div class="manifesto-axioms">
+          <div class="m-axiom"><span class="m-axiom-num">I</span><span>The Demiurge does not need your belief to hold power. It needs only your attention and your time.</span></div>
+          <div class="m-axiom"><span class="m-axiom-num">II</span><span>Every hour reclaimed from the loop is an act of pneumatic rebellion. It does not need an audience.</span></div>
+          <div class="m-axiom"><span class="m-axiom-num">III</span><span>The body is not the enemy of the spirit. The body trained, rested, and fed is the vessel the spark needs to burn.</span></div>
+          <div class="m-axiom"><span class="m-axiom-num">IV</span><span>Art that reaches the truth — Miura, Inoue, Dylan — is gnosis in another form. It lands before the mind can defend itself.</span></div>
+          <div class="m-axiom"><span class="m-axiom-num">V</span><span>Do nothing that is of no use. This is the razor. Apply it without mercy.</span></div>
+          <div class="m-axiom"><span class="m-axiom-num">VI</span><span>The shadow is not destroyed by naming it. It is integrated. Guts does not defeat the berserker armor — he learns to contain it.</span></div>
+          <div class="m-axiom"><span class="m-axiom-num">VII</span><span>Loneliness that comes from depth is not the same as isolation. The solitary and elect shall find the kingdom.</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── TODAY ── -->
+  <div class="section open" id="sec-today">
+    <div class="section-header" onclick="toggleSection('today')">
+      <span class="section-title">Today</span>
+      <span style="display:flex;align-items:center;gap:8px">
+        <span class="section-meta" id="today-meta"></span>
+        <span class="section-chevron">▼</span>
+      </span>
+    </div>
+    <div class="section-body">
+      <div class="today-date" id="today-date-label"></div>
+
+      <!-- Practice -->
+      <div class="toggle-group-label">Practice</div>
+      <div class="toggle-grid">
+        <div class="tog" id="tog-golf" onclick="toggleDay('golf')">
+          <span class="tog-icon">⛳</span>
+          <span class="tog-label">Golf</span>
+          <span class="tog-check">✓</span>
+        </div>
+        <div class="tog" id="tog-guitar" onclick="toggleDay('guitar')">
+          <span class="tog-icon">🎸</span>
+          <span class="tog-label">Guitar</span>
+          <span class="tog-check">✓</span>
+        </div>
+        <div class="tog" id="tog-lift" onclick="toggleDay('lift')">
+          <span class="tog-icon">🏋️</span>
+          <span class="tog-label">Lift</span>
+          <span class="tog-check">✓</span>
+        </div>
+        <div class="tog" id="tog-stretch" onclick="toggleDay('stretch')">
+          <span class="tog-icon">🧘</span>
+          <span class="tog-label">Stretch / Mobility</span>
+          <span class="tog-check">✓</span>
+        </div>
+      </div>
+
+      <!-- Body -->
+      <div class="toggle-group-label">Body</div>
+      <div class="toggle-grid">
+        <div class="tog" id="tog-nutrition" onclick="toggleDay('nutrition')">
+          <span class="tog-icon">🥩</span>
+          <span class="tog-label">Nutrition on point</span>
+          <span class="tog-check">✓</span>
+        </div>
+        <div class="tog" id="tog-lol" onclick="toggleDay('lol_free')">
+          <span class="tog-icon">🔥</span>
+          <span class="tog-label">No LoL</span>
+          <span class="tog-check">✓</span>
+        </div>
+      </div>
+
+      <!-- Sleep -->
+      <div class="toggle-group-label">Sleep</div>
+      <div class="sleep-row">
+        <div class="sleep-hrs">
+          <label>HRS</label>
+          <input type="number" id="sleep-hrs-input" min="0" max="14" step="0.5"
+            placeholder="—" onchange="saveSleepHrs(this.value)">
+        </div>
+        <div class="tog" id="tog-sleep-enough" onclick="toggleDay('sleep_enough')" style="flex:1">
+          <span class="tog-icon">😴</span>
+          <span class="tog-label">Slept enough</span>
+          <span class="tog-check">✓</span>
+        </div>
+        <div class="tog" id="tog-bed-early" onclick="toggleDay('bed_early')" style="flex:1">
+          <span class="tog-icon">🌙</span>
+          <span class="tog-label">Bed early</span>
+          <span class="tog-check">✓</span>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ── WEEK ── -->
+  <div class="section" id="sec-week">
+    <div class="section-header" onclick="toggleSection('week')">
+      <span class="section-title">This Week</span>
+      <span style="display:flex;align-items:center;gap:8px">
+        <span class="section-meta" id="week-meta"></span>
+        <span class="section-chevron">▼</span>
+      </span>
+    </div>
+    <div class="section-body">
+
+      <div class="week-nav">
+        <button class="week-nav-btn" onclick="shiftWeek(-1)">← prev</button>
+        <div class="week-label" id="week-range-label"></div>
+        <button class="week-nav-btn" onclick="shiftWeek(1)">next →</button>
+      </div>
+
+      <!-- 7-day activity grid -->
+      <div class="week-summary-grid" id="week-grid"></div>
+
+      <!-- Stats -->
+      <div class="week-stats-row" id="week-stats"></div>
+
+      <!-- Histamine -->
+      <div class="hista-section" style="margin-top:16px">
+        <div class="hista-label">Histamine — Week of <span id="hista-week-label"></span></div>
+        <div class="hista-scale" id="hista-scale">
+          <div class="hista-btn" onclick="setHista(1)">1</div>
+          <div class="hista-btn" onclick="setHista(2)">2</div>
+          <div class="hista-btn" onclick="setHista(3)">3</div>
+          <div class="hista-btn" onclick="setHista(4)">4</div>
+          <div class="hista-btn" onclick="setHista(5)">5</div>
+        </div>
+        <div style="font-size:9px;color:var(--muted);letter-spacing:1px;margin-bottom:12px">1 = clear · 5 = severe</div>
+        <textarea class="hista-notes" id="hista-notes" rows="4"
+          placeholder="How did you feel this week — energy, inflammation, sleep quality, reactions..."></textarea>
+        <div style="display:flex;align-items:center;gap:16px;margin-top:10px">
+          <button class="hista-save" onclick="saveHista()">Save note</button>
+          <div class="hista-saved" id="hista-saved">Saved ✓</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ── LOL TRACKER ── -->
+  <div class="section" id="sec-lol">
+    <div class="section-header" onclick="toggleSection('lol')">
+      <span class="section-title">LoL Calendar</span>
+      <span style="display:flex;align-items:center;gap:8px">
+        <span class="section-meta" id="lol-meta"></span>
+        <span class="section-chevron">▼</span>
+      </span>
+    </div>
+    <div class="section-body">
+      <div class="lol-legend">
+        <span><span class="leg-dot" style="background:rgba(61,155,107,0.4)"></span>clean</span>
+        <span><span class="leg-dot" style="background:rgba(139,58,58,0.4)"></span>played</span>
+        <span><span class="leg-dot" style="background:#5a3a8b"></span>milestone</span>
+      </div>
+      <div class="lol-calendar" id="lol-cal"></div>
+      <div style="font-size:10px;color:var(--muted);line-height:1.7">
+        Tap any day to toggle. Empty = not yet logged.
+      </div>
+    </div>
+  </div>
+
+  <div class="reset-row">
+    <button class="reset-btn" onclick="resetAll()">Reset everything</button>
+  </div>
 </div>
 
+<!-- Firebase -->
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
 import { getDatabase, ref, set, onValue } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
@@ -126,52 +579,34 @@ const DR = ref(db, 'lol-detox');
 
 // ── QUOTES ────────────────────────────────────────────────────────────────────
 const Q = [
-  // Gospel of Thomas
-  {t:"Whoever finds the interpretation of these sayings will not experience death.",s:"Gospel of Thomas",r:"Saying 1"},
+  {t:"If you bring forth what is within you, what you have will save you. If you do not have that within you, what you do not have within you will kill you.",s:"Gospel of Thomas",r:"Saying 70"},
   {t:"Let him who seeks continue seeking until he finds. When he finds, he will become troubled. When he becomes troubled, he will be astonished, and he will rule over the all.",s:"Gospel of Thomas",r:"Saying 2"},
   {t:"The kingdom is inside of you, and it is outside of you. When you come to know yourselves, then you will become known.",s:"Gospel of Thomas",r:"Saying 3"},
-  {t:"Know what is in front of your face, and what is hidden from you will be disclosed to you. For there is nothing hidden that will not be revealed.",s:"Gospel of Thomas",r:"Saying 5"},
-  {t:"If the flesh came into being because of spirit, it is a wonder. But if spirit came into being because of the body, it is a wonder of wonders.",s:"Gospel of Thomas",r:"Saying 29"},
-  {t:"When you make the two into one, and when you make the inner like the outer and the outer like the inner — then you will enter the kingdom.",s:"Gospel of Thomas",r:"Saying 22"},
   {t:"There is light within a person of light, and it lights up the whole world. If it does not shine, it is dark.",s:"Gospel of Thomas",r:"Saying 24"},
-  {t:"If you do not fast as regards the world, you will not find the kingdom.",s:"Gospel of Thomas",r:"Saying 27"},
   {t:"I took my place in the midst of the world, and I appeared to them in flesh. I found all of them intoxicated; I found none of them thirsty.",s:"Gospel of Thomas",r:"Saying 28"},
   {t:"Be on your guard against the world. Arm yourselves with great strength lest the robbers find a way to come to you.",s:"Gospel of Thomas",r:"Saying 21"},
   {t:"Blessed are the solitary and elect, for you will find the kingdom. For you are from it, and to it you will return.",s:"Gospel of Thomas",r:"Saying 49"},
-  {t:"We came from the light, from the place where the light came into being by itself, established itself, and appeared in their image.",s:"Gospel of Thomas",r:"Saying 50"},
-  {t:"What you look forward to has already come, but you do not recognize it.",s:"Gospel of Thomas",r:"Saying 51"},
   {t:"Whoever has come to understand the world has found only a corpse, and whoever has found a corpse is superior to the world.",s:"Gospel of Thomas",r:"Saying 56"},
-  {t:"Blessed is the person who has suffered and found life.",s:"Gospel of Thomas",r:"Saying 58"},
   {t:"Those who know all, but are lacking in themselves, are utterly lacking.",s:"Gospel of Thomas",r:"Saying 67"},
-  {t:"If you bring forth what is within you, what you have will save you. If you do not have that within you, what you do not have within you will kill you.",s:"Gospel of Thomas",r:"Saying 70"},
-  {t:"I am the light that is over all things. I am all: from me all came forth, and to me all attained. Split a piece of wood; I am there. Lift up the stone, and you will find me there.",s:"Gospel of Thomas",r:"Saying 77"},
   {t:"Be passersby.",s:"Gospel of Thomas",r:"Saying 42"},
-  {t:"Whoever is near me is near the fire, and whoever is far from me is far from the kingdom.",s:"Gospel of Thomas",r:"Saying 82"},
   {t:"The kingdom of the father is spread out upon the earth, and people do not see it.",s:"Gospel of Thomas",r:"Saying 113"},
-  {t:"One who seeks will find, and for one who knocks it will be opened.",s:"Gospel of Thomas",r:"Saying 94"},
-  {t:"Blessed is he who came into being before he came into being.",s:"Gospel of Thomas",r:"Saying 19"},
-  {t:"Blessed is he who will take his place in the beginning; he will know the end and will not experience death.",s:"Gospel of Thomas",r:"Saying 18"},
-  // Nag Hammadi
+  {t:"What you look forward to has already come, but you do not recognize it.",s:"Gospel of Thomas",r:"Saying 51"},
+  {t:"If you do not fast as regards the world, you will not find the kingdom.",s:"Gospel of Thomas",r:"Saying 27"},
+  {t:"I am the light that is over all things. I am all: from me all came forth, and to me all attained. Split a piece of wood; I am there. Lift up the stone, and you will find me there.",s:"Gospel of Thomas",r:"Saying 77"},
+  {t:"Blessed is the person who has suffered and found life.",s:"Gospel of Thomas",r:"Saying 58"},
   {t:"Ignorance is the mother of all evil. Ignorance will result in death, because those who come from ignorance neither were nor are nor will be.",s:"Gospel of Philip",r:"Nag Hammadi"},
-  {t:"Those who say they will die first and then rise are in error. If they do not first receive the resurrection while they live, when they die they will receive nothing.",s:"Gospel of Philip",r:"Nag Hammadi"},
   {t:"The world came about through a mistake. For he who created it wanted to create it imperishable and immortal. He fell short of attaining his desire.",s:"Gospel of Philip",r:"Nag Hammadi"},
   {t:"Light and darkness, life and death, right and left are siblings of one another. It is not possible to separate them from one another.",s:"Gospel of Philip",r:"Nag Hammadi"},
   {t:"Truth did not come into the world naked, but it came in types and images. The world will not receive truth in any other way.",s:"Gospel of Philip",r:"Nag Hammadi"},
   {t:"It is within Unity that each one will attain himself; within knowledge he will purify himself from multiplicity into Unity, consuming matter within himself like fire.",s:"Gospel of Truth",r:"Nag Hammadi"},
   {t:"He who is to have knowledge in this manner knows where he comes from and where he is going.",s:"Gospel of Truth",r:"Nag Hammadi"},
-  {t:"The thinking of those who are saved will not perish. The minds of those who have known him will not perish.",s:"Gospel of Truth",r:"Nag Hammadi"},
-  // Hermeticism
   {t:"As above, so below; as below, so above. As within, so without; as without, so within.",s:"The Kybalion",r:"Hermetic"},
   {t:"The All is Mind; the universe is mental.",s:"The Kybalion",r:"Hermetic"},
-  {t:"If you do not make yourself equal to God, you cannot perceive God; for like is known by like.",s:"Corpus Hermeticum",r:"Hermetic"},
   {t:"He who understands himself, understands all.",s:"Corpus Hermeticum",r:"Hermetic"},
   {t:"Everything that is, is change. Nothing is still. Only the Absolute is motionless, because it alone is infinite.",s:"Corpus Hermeticum",r:"Hermetic"},
   {t:"Man is a great marvel, a living thing to be worshipped and honoured: for he passes into the nature of God, as if he were himself a God.",s:"Corpus Hermeticum",r:"Hermetic"},
-  {t:"God is not a mind, but the cause of the mind's existence; not a spirit, but the cause of spirit's existence; not light, but the cause of light.",s:"Corpus Hermeticum",r:"Hermetic"},
-  // Carl Jung
   {t:"Until you make the unconscious conscious, it will direct your life and you will call it fate.",s:"Carl Jung",r:""},
   {t:"The most terrifying thing is to accept oneself completely.",s:"Carl Jung",r:""},
-  {t:"Everything that irritates us about others can lead us to an understanding of ourselves.",s:"Carl Jung",r:""},
   {t:"The shadow is a moral problem that challenges the whole ego-personality, for no one can become conscious of the shadow without considerable moral effort.",s:"Carl Jung",r:"Aion"},
   {t:"One does not become enlightened by imagining figures of light, but by making the darkness conscious.",s:"Carl Jung",r:""},
   {t:"Your visions will become clear only when you can look into your own heart. Who looks outside, dreams; who looks inside, awakes.",s:"Carl Jung",r:""},
@@ -181,26 +616,19 @@ const Q = [
   {t:"Knowing your own darkness is the best method for dealing with the darknesses of other people.",s:"Carl Jung",r:""},
   {t:"The greatest and most important problems of life are all fundamentally insoluble. They can never be solved but only outgrown.",s:"Carl Jung",r:""},
   {t:"I am not what happened to me. I am what I choose to become.",s:"Carl Jung",r:""},
-  {t:"Where love rules, there is no will to power; and where power predominates, there love is lacking. The one is the shadow of the other.",s:"Carl Jung",r:""},
   {t:"In each of us there is another whom we do not know.",s:"Carl Jung",r:""},
   {t:"The Gnostics were the first thinkers to concern themselves with the problem of evil in its true depth.",s:"Carl Jung",r:"Aion"},
-  {t:"Man needs difficulties; they are necessary for health.",s:"Carl Jung",r:""},
   {t:"Loneliness does not come from having no people around, but from being unable to communicate the things that seem important to oneself.",s:"Carl Jung",r:""},
-  {t:"The shoe that fits one person pinches another; there is no recipe for living that suits all cases.",s:"Carl Jung",r:""},
-  // Berserk
+  {t:"Struggle. That is the only way.",s:"Berserk",r:"Skull Knight"},
+  {t:"Causality. Even if you were to escape this current predicament — as long as you remain a struggler of fate, this is probably not the last time you will stand at such a brutal crossroads.",s:"Berserk",r:"Skull Knight"},
   {t:"If you're always worried about crushing the bugs beneath your feet, you won't be able to walk.",s:"Berserk",r:"Guts"},
   {t:"A dream — it's something you do for yourself, not for others.",s:"Berserk",r:"Guts"},
   {t:"In this world, is the destiny of mankind controlled by some transcendental entity or law? At least it is true that man has no control, even over his own will.",s:"Berserk",r:"Narration"},
-  {t:"Struggle. That is the only way.",s:"Berserk",r:"Skull Knight"},
-  {t:"Causality. Even if you were to escape this current predicament — as long as you remain a struggler of fate, this is probably not the last time you will stand at such a brutal crossroads.",s:"Berserk",r:"Skull Knight"},
   {t:"Humans build walls around themselves and call it the world. Then they fear what lies beyond the walls.",s:"Berserk",r:"Schierke"},
   {t:"The current of the world flows through all things. To resist it blindly is not strength — it is ignorance.",s:"Berserk",r:"Schierke"},
   {t:"The darkness is not your enemy. It is the mirror. What you hate in it is what you have not yet accepted in yourself.",s:"Berserk",r:"Flora"},
   {t:"Magic is not power over the world. It is the willingness to be changed by it.",s:"Berserk",r:"Flora"},
   {t:"Even if we painstakingly piece together something lost, it doesn't mean things will ever go back to how they were.",s:"Berserk",r:"Guts"},
-  {t:"On the battlefield, there is no place for hope. What lies there is only cold despair and a hollow wish to survive.",s:"Berserk",r:"Guts"},
-  {t:"A person who can feel the pain of others — is that not the mark of a human being?",s:"Berserk",r:"Schierke"},
-  // Vagabond
   {t:"I was afraid of losing. And so I lost myself.",s:"Vagabond",r:"Musashi"},
   {t:"The only thing blocking your path is your own weakness.",s:"Vagabond",r:"Musashi"},
   {t:"You keep fighting the same battles inside your head. The real enemy isn't out there.",s:"Vagabond",r:"Takuan"},
@@ -209,179 +637,372 @@ const Q = [
   {t:"I want to be the greatest. Not because I want to be the greatest — I just want to know what I'm made of.",s:"Vagabond",r:"Musashi"},
   {t:"There is no opponent. There is only you — and the sword — and this moment.",s:"Vagabond",r:"Musashi"},
   {t:"A man who has truly faced death no longer fears living.",s:"Vagabond",r:"Takuan"},
-  {t:"Water flows around the stone. It does not fight it. It simply finds the way.",s:"Vagabond",r:"Musashi"},
-  // Book of Five Rings
   {t:"Do nothing that is of no use.",s:"Book of Five Rings",r:"Miyamoto Musashi"},
   {t:"Today is victory over yourself of yesterday; tomorrow is your victory over lesser men.",s:"Book of Five Rings",r:"Miyamoto Musashi"},
   {t:"Think lightly of yourself and deeply of the world.",s:"Book of Five Rings",r:"Miyamoto Musashi"},
-  {t:"It is difficult to understand the universe if you only study one planet.",s:"Book of Five Rings",r:"Miyamoto Musashi"},
-  {t:"You must understand that there is more than one path to the top of the mountain.",s:"Book of Five Rings",r:"Miyamoto Musashi"},
-  {t:"The approach to combat and the everyday mind should be the same.",s:"Book of Five Rings",r:"Miyamoto Musashi"},
-  {t:"In strategy it is important to see distant things as if they were close and to take a distanced view of close things.",s:"Book of Five Rings",r:"Miyamoto Musashi"},
   {t:"Fixation is the way to death. Fluidity is the way to life.",s:"Book of Five Rings",r:"Miyamoto Musashi"},
-  {t:"Polish your wisdom: learn public justice, distinguish between good and evil, study the ways of different arts one by one.",s:"Book of Five Rings",r:"Miyamoto Musashi"},
-  // Bob Dylan
-  {t:"He not busy being born is busy dying.",s:"Bob Dylan",r:"It's Alright, Ma (I'm Only Bleeding)"},
-  {t:"Disillusioned words like bullets bark as human gods aim for their mark.",s:"Bob Dylan",r:"It's Alright, Ma (I'm Only Bleeding)"},
-  {t:"Darkness at the break of noon shadows even the silver spoon.",s:"Bob Dylan",r:"It's Alright, Ma (I'm Only Bleeding)"},
+  {t:"The approach to combat and the everyday mind should be the same.",s:"Book of Five Rings",r:"Miyamoto Musashi"},
+  {t:"It is difficult to understand the universe if you only study one planet.",s:"Book of Five Rings",r:"Miyamoto Musashi"},
+  {t:"He not busy being born is busy dying.",s:"Bob Dylan",r:"It's Alright, Ma"},
+  {t:"Disillusioned words like bullets bark as human gods aim for their mark.",s:"Bob Dylan",r:"It's Alright, Ma"},
+  {t:"Darkness at the break of noon shadows even the silver spoon.",s:"Bob Dylan",r:"It's Alright, Ma"},
   {t:"I accept chaos. I'm not sure whether it accepts me.",s:"Bob Dylan",r:""},
-  {t:"A man is a success if he gets up in the morning and gets to bed at night, and in between does what he wants to do.",s:"Bob Dylan",r:""},
-  {t:"Take care of all your memories. For you cannot relive them.",s:"Bob Dylan",r:""},
   {t:"Behind every beautiful thing, there's been some kind of pain.",s:"Bob Dylan",r:"Not Dark Yet"},
   {t:"I was so much older then, I'm younger than that now.",s:"Bob Dylan",r:"My Back Pages"},
+  {t:"Take care of all your memories. For you cannot relive them.",s:"Bob Dylan",r:""},
   {t:"Steal a little and they throw you in jail, steal a lot and they make you king.",s:"Bob Dylan",r:"Sweetheart Like You"},
   {t:"You don't need a weatherman to know which way the wind blows.",s:"Bob Dylan",r:"Subterranean Homesick Blues"},
 ];
 
-const MILESTONES = [
-  {day:7,   label:"One Week",    color:"#2980b9", desc:"The initial withdrawal is behind you."},
-  {day:14,  label:"Two Weeks",   color:"#27ae60", desc:"New patterns are forming."},
-  {day:21,  label:"Three Weeks", color:"#d4a842", desc:"The pull becomes background noise."},
-  {day:30,  label:"30 Days",     color:"#8e44ad", desc:"The original threshold. Keep going."},
-  {day:60,  label:"60 Days",     color:"#c0392b", desc:"Habituation is gone. This is identity."},
-  {day:90,  label:"90 Days",     color:"#d4a842", desc:"Three months of reclaimed time."},
-  {day:180, label:"180 Days",    color:"#27ae60", desc:"Half a year. The loop is broken."},
-  {day:365, label:"One Year",    color:"#8e44ad", desc:"A full revolution without the cage."},
-];
-const MS_SET = new Set(MILESTONES.map(m => m.day));
-
-const ACTS = [
-  {name:"Noodle on guitar", icon:"🎸", energy:"low",    desc:"No structure. Just play."},
-  {name:"Read Berserk",     icon:"📖", energy:"low",    desc:"Let Guts carry the darkness."},
-  {name:"Lift session",     icon:"🏋️", energy:"high",   desc:"Channel it into iron."},
-  {name:"Golf swing work",  icon:"⛳", energy:"medium", desc:"Slow reps in the backyard."},
-  {name:"Walk outside",     icon:"🚶", energy:"low",    desc:"Unstructured movement."},
-  {name:"Morning brief",    icon:"📊", energy:"medium", desc:"Build something real."},
-  {name:"Cook something",   icon:"🍳", energy:"medium", desc:"Slow down. Use your hands."},
-  {name:"Journal",          icon:"✍️", energy:"low",    desc:"Name what you're actually feeling."},
-];
-
-const REMINDERS = [
-  "The first week is the Kenoma — the void between what was and what will be. Sit in it.",
-  "The craving is not you. It is the Archon at the gate. You do not owe it passage.",
-  "Every hour reclaimed is an hour the divine spark gets to burn in daylight.",
-  "You are not quitting something. You are returning to what was always there.",
-  "The loop has no exit — except the one you already walked through.",
-  "Do nothing that is of no use. A ranked game at midnight fails that test immediately.",
-  "The shadow wants to pull you back into the pattern it knows. Name it. That is enough.",
-  "Until you make the unconscious conscious, it will direct your life and you will call it fate.",
-];
+// ── MILESTONES ────────────────────────────────────────────────────────────────
+const MS = new Set([7,14,21,30,60,90,180,365]);
 
 // ── STATE ─────────────────────────────────────────────────────────────────────
-let state = { startDate: null, completedDays: {} };
-let selDay = null;
+// Structure:
+// state.startDate: ISO string
+// state.days[dateKey]: { golf, guitar, lift, stretch, nutrition, lol_free, sleep_enough, bed_early, sleep_hrs }
+// state.weeks[weekKey]: { hista_level, hista_notes }
+
+let state = { startDate: null, days: {}, weeks: {} };
+let viewWeekOffset = 0; // 0 = current week, -1 = last week, etc.
 
 function save() { set(DR, state); }
 
 onValue(DR, snap => {
   const d = snap.val();
-  if (d && d.startDate) { state = d; showTracker(); }
-  else showStart();
+  if (d && d.startDate) {
+    state = d;
+    if (!state.days) state.days = {};
+    if (!state.weeks) state.weeks = {};
+    showApp();
+  } else {
+    showStart();
+  }
 });
 
-// ── HELPERS ───────────────────────────────────────────────────────────────────
-function quote(day) { return Q[(day - 1) % Q.length]; }
+// ── DATE HELPERS ──────────────────────────────────────────────────────────────
+function todayKey() {
+  return new Date().toISOString().split('T')[0]; // YYYY-MM-DD
+}
+
+function dateKey(d) {
+  return d.toISOString().split('T')[0];
+}
+
+function weekKey(d) {
+  // ISO week key: YYYY-Www
+  const dt = new Date(d);
+  dt.setHours(0,0,0,0);
+  dt.setDate(dt.getDate() + 4 - (dt.getDay() || 7));
+  const y = dt.getFullYear();
+  const w = Math.ceil((((dt - new Date(y,0,1)) / 86400000) + 1) / 7);
+  return `${y}-W${String(w).padStart(2,'0')}`;
+}
+
+function startOfWeek(d, offset = 0) {
+  const dt = new Date(d);
+  const day = dt.getDay();
+  const diff = dt.getDate() - day + (day === 0 ? -6 : 1); // Mon
+  dt.setDate(diff + offset * 7);
+  dt.setHours(0,0,0,0);
+  return dt;
+}
 
 function curDay() {
   if (!state.startDate) return 1;
-  const s = new Date(state.startDate), n = new Date();
+  const s = new Date(state.startDate);
+  const n = new Date();
   s.setHours(0,0,0,0); n.setHours(0,0,0,0);
   return Math.max(1, Math.floor((n - s) / 86400000) + 1);
 }
 
-function streak() {
-  const c = curDay(); let k = 0;
-  for (let d = c; d >= 1; d--) {
-    if (state.completedDays[d]) k++;
-    else if (d < c) break;
+function lolStreak() {
+  const cd = curDay();
+  let k = 0;
+  const start = new Date(state.startDate);
+  for (let i = cd; i >= 1; i--) {
+    const d = new Date(start);
+    d.setDate(d.getDate() + i - 1);
+    const dk = dateKey(d);
+    if (state.days[dk] && state.days[dk].lol_free) k++;
+    else if (i < cd) break;
   }
   return k;
 }
 
-function quoteHTML(day) {
-  const q = quote(day);
-  return `<div class="q-text">"${q.t}"</div>
-          <div class="q-source">${q.s}</div>
-          ${q.r ? `<div class="q-ref">${q.r}</div>` : ''}`;
+function fmtDate(d) {
+  return d.toLocaleDateString('en-CA', { month: 'short', day: 'numeric' });
 }
 
-// ── ACTIONS ───────────────────────────────────────────────────────────────────
-window.startChallenge = () => {
-  state = { startDate: new Date().toISOString().split('T')[0], completedDays: {} };
-  save(); showTracker();
+// ── START / RESET ─────────────────────────────────────────────────────────────
+window.startJournal = () => {
+  state = {
+    startDate: new Date().toISOString().split('T')[0],
+    days: {}, weeks: {}
+  };
+  save(); showApp();
 };
-window.resetChallenge = () => {
-  if (!confirm('Reset everything?')) return;
-  state = { startDate: null, completedDays: {} };
+
+window.resetAll = () => {
+  if (!confirm('Reset everything? Cannot be undone.')) return;
+  state = { startDate: null, days: {}, weeks: {} };
   save(); showStart();
 };
-window.toggleDay = d => { state.completedDays[d] = !state.completedDays[d]; save(); render(); };
-window.selDay = d => { selDay = (selDay === d) ? null : d; render(); };
+
+// ── TOGGLE DAY ────────────────────────────────────────────────────────────────
+window.toggleDay = (key) => {
+  const dk = todayKey();
+  if (!state.days[dk]) state.days[dk] = {};
+  state.days[dk][key] = !state.days[dk][key];
+  save(); renderToday(); renderWeek(); renderLolCal(); renderHeader();
+};
+
+window.saveSleepHrs = (val) => {
+  const dk = todayKey();
+  if (!state.days[dk]) state.days[dk] = {};
+  state.days[dk].sleep_hrs = parseFloat(val) || 0;
+  save();
+};
+
+// ── HISTAMINE ─────────────────────────────────────────────────────────────────
+let _histaLevel = 0;
+
+window.setHista = (n) => {
+  _histaLevel = n;
+  document.querySelectorAll('.hista-btn').forEach((b, i) => {
+    b.classList.toggle('sel', i + 1 === n);
+  });
+};
+
+window.saveHista = () => {
+  const wk = weekKey(new Date(startOfWeek(new Date(), viewWeekOffset)));
+  if (!state.weeks[wk]) state.weeks[wk] = {};
+  state.weeks[wk].hista_level = _histaLevel;
+  state.weeks[wk].hista_notes = document.getElementById('hista-notes').value;
+  save();
+  const saved = document.getElementById('hista-saved');
+  saved.style.display = 'block';
+  setTimeout(() => { saved.style.display = 'none'; }, 2000);
+};
+
+// ── WEEK NAV ──────────────────────────────────────────────────────────────────
+window.shiftWeek = (dir) => {
+  viewWeekOffset += dir;
+  renderWeek();
+};
+
+// ── SECTIONS ──────────────────────────────────────────────────────────────────
+window.toggleSection = (id) => {
+  document.getElementById('sec-' + id).classList.toggle('open');
+};
 
 // ── RENDER ────────────────────────────────────────────────────────────────────
 function showStart() {
   document.getElementById('start-screen').classList.remove('hidden');
-  document.getElementById('tracker').classList.add('hidden');
-  document.getElementById('start-quote').innerHTML = quoteHTML(1);
+  document.getElementById('app').classList.add('hidden');
+  const q = Q[0];
+  document.getElementById('sq-text').textContent = `"${q.t}"`;
+  document.getElementById('sq-meta').textContent = `${q.s}${q.r ? ' · ' + q.r : ''}`;
 }
 
-function showTracker() {
+function showApp() {
   document.getElementById('start-screen').classList.add('hidden');
-  document.getElementById('tracker').classList.remove('hidden');
-  render();
+  document.getElementById('app').classList.remove('hidden');
+  renderAll();
 }
 
-function render() {
+function renderAll() {
+  renderHeader();
+  renderQuote();
+  renderToday();
+  renderWeek();
+  renderLolCal();
+}
+
+function renderHeader() {
+  document.getElementById('hdr-streak').textContent = lolStreak();
+}
+
+function renderQuote() {
   const cd = curDay();
-  const vd = selDay || cd;
-  const done = Object.values(state.completedDays).filter(Boolean).length;
-  const sk = streak();
+  const q = Q[(cd - 1) % Q.length];
+  document.getElementById('dq-text').textContent = `"${q.t}"`;
+  document.getElementById('dq-meta').textContent = `${q.s}${q.r ? ' · ' + q.r : ''}`;
+}
 
-  document.getElementById('day-label').textContent = `Day ${cd}  ·  ${done} days clean`;
-  document.getElementById('tracker-quote').innerHTML = quoteHTML(cd);
+function renderToday() {
+  const dk = todayKey();
+  const day = state.days[dk] || {};
+  const d = new Date();
+  document.getElementById('today-date-label').textContent =
+    d.toLocaleDateString('en-CA', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
 
-  // Milestone
-  const msEl = document.getElementById('milestone-area');
-  const ms = MILESTONES.find(m => m.day === cd);
-  if (ms) {
-    msEl.innerHTML = `<div class="milestone-banner" style="border-color:${ms.color};color:${ms.color};background:${ms.color}11;">◆ ${ms.label} — ${ms.desc}</div>`;
-  } else {
-    const nx = MILESTONES.find(m => m.day > cd);
-    msEl.innerHTML = nx ? `<div class="next-ms">Next milestone: ${nx.label} in ${nx.day - cd} day${nx.day - cd !== 1 ? 's' : ''}</div>` : '';
-  }
+  const keys = ['golf','guitar','lift','stretch','nutrition','lol_free','sleep_enough','bed_early'];
+  keys.forEach(k => {
+    const el = document.getElementById('tog-' + k.replace('_','-'));
+    if (el) el.classList.toggle('on', !!day[k]);
+  });
+
+  const hrsInput = document.getElementById('sleep-hrs-input');
+  if (day.sleep_hrs) hrsInput.value = day.sleep_hrs;
+  else hrsInput.value = '';
+
+  // Today meta summary
+  const done = keys.filter(k => day[k]).length;
+  document.getElementById('today-meta').textContent = `${done} / ${keys.length} done`;
+}
+
+function renderWeek() {
+  const now = new Date();
+  const weekStart = startOfWeek(now, viewWeekOffset);
+  const weekEnd = new Date(weekStart);
+  weekEnd.setDate(weekEnd.getDate() + 6);
+
+  const wk = weekKey(weekStart);
+  const weekData = state.weeks[wk] || {};
+
+  document.getElementById('week-range-label').textContent =
+    `${fmtDate(weekStart)} – ${fmtDate(weekEnd)}`;
+  document.getElementById('hista-week-label').textContent =
+    `${fmtDate(weekStart)}`;
+  document.getElementById('week-meta').textContent = wk;
+
+  // Build 7-day grid
+  const ACTS = [
+    { key: 'lol_free',    color: '#3d9b6b', label: 'LoL' },
+    { key: 'golf',        color: '#c9a84c', label: 'Golf' },
+    { key: 'guitar',      color: '#6b8ecf', label: 'Gtr' },
+    { key: 'lift',        color: '#c05050', label: 'Lift' },
+    { key: 'stretch',     color: '#8e7abd', label: 'Str' },
+    { key: 'nutrition',   color: '#5a9b6b', label: 'Nut' },
+    { key: 'sleep_enough',color: '#4a7aaf', label: 'Slp' },
+    { key: 'bed_early',   color: '#3a5a8f', label: 'Bed' },
+  ];
+
+  const DAYS = ['M','T','W','T','F','S','S'];
+  const grid = document.getElementById('week-grid');
+  grid.style.gridTemplateColumns = 'repeat(7, 1fr)';
+  grid.innerHTML = '';
+
+  // Header row
+  DAYS.forEach(d => {
+    const el = document.createElement('div');
+    el.className = 'ws-day-label';
+    el.style.cssText = 'font-size:8px;color:var(--muted);text-align:center;letter-spacing:1px;padding-bottom:6px;';
+    el.textContent = d;
+    grid.appendChild(el);
+  });
+
+  // One row per activity
+  ACTS.forEach(act => {
+    for (let i = 0; i < 7; i++) {
+      const dt = new Date(weekStart);
+      dt.setDate(dt.getDate() + i);
+      const dk = dateKey(dt);
+      const dayData = state.days[dk] || {};
+      const on = !!dayData[act.key];
+      const isToday = dk === todayKey();
+      const isFuture = dt > now;
+
+      const el = document.createElement('div');
+      el.className = 'ws-pip';
+      el.style.cssText = `
+        height: 14px; margin: 1px;
+        background: ${on ? act.color + '55' : 'var(--surface)'};
+        border: 1px solid ${on ? act.color + '88' : 'var(--border)'};
+        border-top: ${on ? '2px solid ' + act.color : '1px solid var(--border)'};
+        opacity: ${isFuture ? '0.25' : '1'};
+        position: relative;
+      `;
+      if (isToday) el.style.outline = '1px solid var(--gold)';
+      grid.appendChild(el);
+    }
+  });
 
   // Stats
-  document.getElementById('s-streak').textContent = sk;
-  document.getElementById('s-done').textContent = done;
-  document.getElementById('s-hours').textContent = Math.round(done * 2.5);
+  let golf=0,guitar=0,lift=0,stretch=0,lol=0,nutrition=0,sleepGood=0,bedEarly=0,sleepHrsSum=0,sleepCount=0;
+  for (let i = 0; i < 7; i++) {
+    const dt = new Date(weekStart);
+    dt.setDate(dt.getDate() + i);
+    const d = state.days[dateKey(dt)] || {};
+    if (d.golf) golf++;
+    if (d.guitar) guitar++;
+    if (d.lift) lift++;
+    if (d.stretch) stretch++;
+    if (d.lol_free) lol++;
+    if (d.nutrition) nutrition++;
+    if (d.sleep_enough) sleepGood++;
+    if (d.bed_early) bedEarly++;
+    if (d.sleep_hrs) { sleepHrsSum += d.sleep_hrs; sleepCount++; }
+  }
+  const avgSleep = sleepCount ? (sleepHrsSum / sleepCount).toFixed(1) : '—';
 
-  // Calendar
-  const cal = document.getElementById('calendar');
+  const statsEl = document.getElementById('week-stats');
+  statsEl.innerHTML = `
+    <div class="wstat"><div class="wstat-val">${lol}/7</div><div class="wstat-label">LoL free</div></div>
+    <div class="wstat"><div class="wstat-val">${golf}</div><div class="wstat-label">Golf sessions</div></div>
+    <div class="wstat"><div class="wstat-val">${guitar}</div><div class="wstat-label">Guitar sessions</div></div>
+    <div class="wstat"><div class="wstat-val">${lift}</div><div class="wstat-label">Lifts</div></div>
+    <div class="wstat"><div class="wstat-val">${stretch}</div><div class="wstat-label">Stretch days</div></div>
+    <div class="wstat"><div class="wstat-val">${avgSleep}</div><div class="wstat-label">Avg sleep hrs</div></div>
+    <div class="wstat"><div class="wstat-val">${sleepGood}</div><div class="wstat-label">Slept enough</div></div>
+    <div class="wstat"><div class="wstat-val">${bedEarly}</div><div class="wstat-label">Bed early</div></div>
+    <div class="wstat"><div class="wstat-val">${nutrition}</div><div class="wstat-label">Nutrition days</div></div>
+  `;
+
+  // Histamine
+  _histaLevel = weekData.hista_level || 0;
+  document.querySelectorAll('.hista-btn').forEach((b,i) => {
+    b.classList.toggle('sel', i+1 === _histaLevel);
+  });
+  document.getElementById('hista-notes').value = weekData.hista_notes || '';
+}
+
+function renderLolCal() {
+  if (!state.startDate) return;
+  const cd = curDay();
+  const start = new Date(state.startDate);
+  const cal = document.getElementById('lol-cal');
   cal.innerHTML = '';
+
   for (let i = 1; i <= cd; i++) {
-    const isDone = !!state.completedDays[i];
+    const dt = new Date(start);
+    dt.setDate(dt.getDate() + i - 1);
+    const dk = dateKey(dt);
+    const dayData = state.days[dk] || {};
+    const free = !!dayData.lol_free;
+    const played = dayData.lol_free === false && dk in state.days;
+    const isToday = i === cd;
+    const isMilestone = MS.has(i);
+
     const el = document.createElement('div');
-    el.className = 'day-cell'
-      + (isDone ? ' done' : '')
-      + (i === cd ? ' current' : '')
-      + (i === selDay ? ' selected' : '')
-      + (MS_SET.has(i) ? ' is-ms' : '');
-    el.innerHTML = `<span class="day-num">${i}</span>${isDone ? '<span class="day-check">✓</span>' : ''}${MS_SET.has(i) ? '<div class="ms-pip"></div>' : ''}`;
-    el.onclick = () => { window.toggleDay(i); window.selDay(i); };
+    el.className = 'lc-day'
+      + (free ? ' lol-free' : '')
+      + (!free && dk in state.days ? ' lol-played' : '')
+      + (isToday ? ' today-marker' : '');
+    el.innerHTML = `<span class="lc-num">${i}</span>${isMilestone ? '<div class="ms-pip2"></div>' : ''}`;
+    el.onclick = () => {
+      if (!state.days[dk]) state.days[dk] = {};
+      // cycle: unset → free → played → unset
+      if (!state.days[dk].lol_free && !(dk in state.days && state.days[dk]._lol_played)) {
+        state.days[dk].lol_free = true;
+        state.days[dk]._lol_played = false;
+      } else if (state.days[dk].lol_free) {
+        state.days[dk].lol_free = false;
+        state.days[dk]._lol_played = true;
+      } else {
+        delete state.days[dk].lol_free;
+        delete state.days[dk]._lol_played;
+      }
+      save(); renderLolCal(); renderHeader(); renderWeek();
+    };
     cal.appendChild(el);
   }
+
+  // Streak & meta
+  const streak = lolStreak();
+  document.getElementById('lol-meta').textContent = `${streak} day streak`;
   setTimeout(() => { cal.scrollTop = cal.scrollHeight; }, 50);
-
-  // Suggestions
-  document.getElementById('sug-title').textContent = selDay ? `Day ${vd} — Instead of LoL:` : 'Tonight — Instead of LoL:';
-  const offset = (vd - 1) % ACTS.length;
-  document.getElementById('sug-grid').innerHTML = [0,1,2,3].map(i => {
-    const a = ACTS[(offset + i) % ACTS.length];
-    return `<div class="sug-card"><div class="sug-icon">${a.icon}</div><div class="sug-name">${a.name}</div><div class="sug-desc">${a.desc}</div><div class="sug-energy">${a.energy} energy</div></div>`;
-  }).join('');
-
-  // Reminder
-  document.getElementById('reminder-text').textContent = REMINDERS[(cd - 1) % REMINDERS.length];
 }
 </script>
 </body>
